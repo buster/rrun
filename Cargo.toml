@@ -1,0 +1,11 @@
+[package]
+name = "rrun"
+version = "0.0.1"
+authors = []
+
+[dependencies.rgtk]
+path = "../rgtk"
+features = ["GTK_3_12"]
+
+[[bin]]
+name = "rrun"
