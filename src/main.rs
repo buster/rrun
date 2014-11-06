@@ -15,6 +15,7 @@ fn complete(cmd: String, last_cmd: Option<String>) -> String {
         let mut possible_commands = output.lines();
         let mut last_iter_cmd = "".into_string();
         // return first match if no previous one was matched
+        println!("cmd: {}, last_cmd: {}, possible_commands:  {}", cmd, last_cmd, output);
         if last_cmd.is_none() { 
             let cmd_arr: Vec<&str> = possible_commands.collect();
             return cmd_arr[0].into_string()
@@ -63,7 +64,9 @@ fn main() {
             65293 => {
                 let cmd = entry.get_text().unwrap();
                 let output = execute(cmd);
-                entry.set_text(output);
+                entry.set_text(output.trim().into_string());
+                last_user_completion = None;
+                last_user_cmd = "".into_string();
             },
             65289 => {
                 let mut complete_cmd: String = "".into_string();
