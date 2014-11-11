@@ -1,89 +1,71 @@
 #![feature(globs)]
 #![crate_type = "bin"]
-
+#![feature(phase)]
+#[phase(plugin, link)] extern crate log;
 extern crate rgtk;
 extern crate libc;
 
 use rgtk::*;
 use rgtk::gtk::signals;
-use std::io::Command;
+use autocomplete::BashAutoCompleter;
+mod autocomplete;
+mod execution;
 
-
-fn complete(cmd: String, last_cmd: Option<String>) -> String {
-    let output = execute(format!("compgen -A command {}", cmd));
-    {
-        let mut possible_commands = output.lines();
-        let mut last_iter_cmd = "".into_string();
-        // return first match if no previous one was matched
-        println!("cmd: {}, last_cmd: {}, possible_commands:  {}", cmd, last_cmd, output);
-        if last_cmd.is_none() { 
-            let cmd_arr: Vec<&str> = possible_commands.collect();
-            return cmd_arr[0].into_string()
-        };
-        let last_cmd = last_cmd.unwrap();
-        for cmd in possible_commands {
-            // return current item if last item was used previously
-            if last_iter_cmd == last_cmd { 
-                return cmd.into_string() 
-            };
-            last_iter_cmd = cmd.into_string();
-        }
-       return last_iter_cmd;
-    }
-}
-
-
-fn execute(cmd: String) -> String {
-    println!("executing: {}", cmd);
-    let mut process = match Command::new("bash").arg("-c").arg(cmd).spawn() {
-      Ok(p) => p,
-      Err(e) => panic!("failed to execute process: {}", e),
-    };
-
-    let output = process.stdout.as_mut().unwrap().read_to_end().unwrap();
-    return String::from_utf8_lossy(output.as_slice()).into_string();
-}
 
 fn main() {
     gtk::init();
-    println!("GTK VERSION: Major: {}, Minor: {}", gtk::get_major_version(), gtk::get_minor_version());
-    let mut window = gtk::Window::new(gtk::window_type::TopLevel).unwrap();
+    debug!("GTK VERSION: Major: {}, Minor: {}", gtk::get_major_version(), gtk::get_minor_version());
+    let mut window = gtk::Window::new(gtk::WindowType::TopLevel).unwrap();
     let mut entry = gtk::SearchEntry::new().unwrap();
-    window.set_title("Yeah a beautiful window with rgtk !");
-    window.set_window_position(gtk::window_position::Center);
+    window.set_title("rrun");
+    window.set_window_position(gtk::WindowPosition::Center);
     
-    let mut last_pressed_key = 0;
-    let mut last_user_cmd: String = "".into_string();
-    let mut last_user_completion: Option<String> = None;
+    let mut autocompleter: BashAutoCompleter = BashAutoCompleter::new();
+    let mut last_pressed_key: u32 = 0;
 
     window.connect(signals::KeyPressEvent::new(|key|{
         let keyval = unsafe { (*key).keyval };
-        println!("key pressed: {}", keyval);
+        let keystate = unsafe { (*key).state };
+        debug!("key pressed: {}", keyval);
         match keyval {
             65307 => gtk::main_quit(),
             65293 => {
                 let cmd = entry.get_text().unwrap();
-                let output = execute(cmd);
-                entry.set_text(output.trim().into_string());
-                last_user_completion = None;
-                last_user_cmd = "".into_string();
-            },
-            65289 => {
-                let mut complete_cmd: String = "".into_string();
-                if last_pressed_key == 65289 {
-                    complete_cmd = last_user_cmd.clone();
+                if keystate == 20 {
+                    let output = execution::execute(cmd, false);
+                    if output.is_some() {
+                        let output = output.unwrap();
+                        entry.set_text(output.trim().into_string());
+                        entry.set_position(-1);
+                    }
+
                 }
                 else {
-                    complete_cmd = entry.get_text().unwrap();
-                    last_user_cmd = complete_cmd.clone();
+                    execution::execute(cmd, true);
+                    gtk::main_quit();
                 }
-                let completion = complete(complete_cmd.clone(), last_user_completion.clone());
-                last_user_completion = Some(completion.clone());
-                entry.set_text(completion);
+
+            },
+            65289 => {
+                let mut completion = None;
+                // last pressed key was TAB, so we want to get the next completion
+                if last_pressed_key == 65289 {
+                    completion = autocompleter.complete_next();
+                }
+                else {
+                    completion = autocompleter.complete_new(entry.get_text().unwrap().as_slice());    
+                }
+                
+                if completion.is_some() {
+                    entry.set_text(completion.unwrap().trim().into_string());
+                    entry.set_position(-1);
+                    last_pressed_key = 65289;
+                    return true;
+                }
             },
             _ => ()
         }
-        last_pressed_key = keyval;
+        last_pressed_key = unsafe { (*key).keyval };
         return false
     }));
 
