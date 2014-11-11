@@ -4,3 +4,7 @@ rrun
     :target: https://travis-ci.org/buster/rrun
 
 minimalistic command launcher in rust
+
+.. image:: rrun.gif
+
+Press Ctrl + Return to display output in window, else rrun will close after execution.

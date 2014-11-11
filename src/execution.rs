@@ -16,6 +16,7 @@ pub fn execute(cmd: String, forget: bool) -> Option<String> {
     let output = process.stdout.as_mut().unwrap().read_to_end().unwrap();
     let out_str = String::from_utf8_lossy(output.as_slice()).into_string();
     let result = process.wait();
+    debug!("result: {}", result);
     match result {
         Ok(process::ExitStatus(0)) => Some(out_str),
         _ => None

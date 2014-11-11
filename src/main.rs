@@ -31,7 +31,9 @@ fn main() {
             65307 => gtk::main_quit(),
             65293 => {
                 let cmd = entry.get_text().unwrap();
-                if keystate == 20 {
+                debug!("keystate: {}", keystate);
+                if keystate == 4 {
+                    debug!("ctrl pressed!");
                     let output = execution::execute(cmd, false);
                     if output.is_some() {
                         let output = output.unwrap();
