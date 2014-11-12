@@ -1,25 +1,29 @@
 use execution;
 
+pub trait AutoCompleter {
+    fn complete_next(&mut self) -> Option<String>;
+    fn complete_new(&mut self, cmd_string: &str) -> Option<String>;
+    fn new() -> Self;
+}
+
 pub struct BashAutoCompleter {
     current_completed_cmd: Option<String>,
     remaining_completions: Vec<String>
 }
 
-
-impl BashAutoCompleter {
-
-    pub fn new() -> BashAutoCompleter {
+impl AutoCompleter for BashAutoCompleter {
+    fn new() -> BashAutoCompleter {
         return BashAutoCompleter {
             current_completed_cmd: None,
             remaining_completions: vec![]
         }
-    }
+    }    
 
-    pub fn complete_next(&mut self) -> Option<String>{
+    fn complete_next(&mut self) -> Option<String>{
         return self.remaining_completions.pop()
     }
 
-    pub fn complete_new(&mut self, cmd_string: &str) -> Option<String>{
+    fn complete_new(&mut self, cmd_string: &str) -> Option<String>{
         //returns a new completion based on the passed string
         let bash_completions = execution::execute(format!("compgen -A command {}", cmd_string), false);
         //convert return string to vector and set self

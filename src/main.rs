@@ -7,7 +7,7 @@ extern crate libc;
 
 use rgtk::*;
 use rgtk::gtk::signals;
-use autocomplete::BashAutoCompleter;
+use autocomplete::{BashAutoCompleter, AutoCompleter};
 mod autocomplete;
 mod execution;
 
@@ -20,7 +20,7 @@ fn main() {
     window.set_title("rrun");
     window.set_window_position(gtk::WindowPosition::Center);
     
-    let mut autocompleter: BashAutoCompleter = BashAutoCompleter::new();
+    let mut autocompleter: BashAutoCompleter = AutoCompleter::new();
     let mut last_pressed_key: u32 = 0;
 
     window.connect(signals::KeyPressEvent::new(|key|{
