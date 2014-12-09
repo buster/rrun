@@ -4,8 +4,8 @@ version = "0.0.1"
 authors = []
 
 [dependencies.rgtk]
-git = "git://github.com/jeremyletang/rgtk.git"
-#path = "../rgtk/"
+#git = "git://github.com/jeremyletang/rgtk.git"
+path = "../rgtk/"
 features = ["GTK_3_12"]
 
 [[bin]]

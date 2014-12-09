@@ -7,6 +7,8 @@ extern crate libc;
 
 use rgtk::*;
 use rgtk::gtk::signals;
+use rgtk::gdk::key;
+use rgtk::gdk::enums::modifier_type;
 use autocomplete::{BashAutoCompleter, AutoCompleter};
 mod autocomplete;
 mod execution;
@@ -19,7 +21,7 @@ fn main() {
     let mut entry = gtk::SearchEntry::new().unwrap();
     window.set_title("rrun");
     window.set_window_position(gtk::WindowPosition::Center);
-    
+
     let mut autocompleter: BashAutoCompleter = AutoCompleter::new();
     let mut last_pressed_key: u32 = 0;
 
@@ -28,11 +30,12 @@ fn main() {
         let keystate = unsafe { (*key).state };
         debug!("key pressed: {}", keyval);
         match keyval {
-            65307 => gtk::main_quit(),
-            65293 => {
+            key::Escape => gtk::main_quit(),
+            key::Return => {
                 let cmd = entry.get_text().unwrap();
                 debug!("keystate: {}", keystate);
-                if keystate == 4 {
+                debug!("Controlmask == {}", modifier_type::ControlMask);
+                if keystate.intersects(modifier_type::ControlMask) {
                     debug!("ctrl pressed!");
                     let output = execution::execute(cmd, false);
                     if output.is_some() {
@@ -48,16 +51,16 @@ fn main() {
                 }
 
             },
-            65289 => {
+            key::Tab => {
                 let mut completion = None;
                 // last pressed key was TAB, so we want to get the next completion
-                if last_pressed_key == 65289 {
+                if last_pressed_key == key::Tab {
                     completion = autocompleter.complete_next();
                 }
                 else {
-                    completion = autocompleter.complete_new(entry.get_text().unwrap().as_slice());    
+                    completion = autocompleter.complete_new(entry.get_text().unwrap().as_slice());
                 }
-                
+
                 if completion.is_some() {
                     entry.set_text(completion.unwrap().trim().into_string());
                     entry.set_position(-1);
