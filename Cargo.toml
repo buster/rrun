@@ -4,6 +4,8 @@ version = "0.0.1"
 authors = []
 
 [dependencies.rgtk]
+git = "git://github.com/buster/rgtk.git"
+branch = "modifier-enums-reform"
 #git = "git://github.com/jeremyletang/rgtk.git"
 path = "../rgtk/"
 features = ["GTK_3_12"]
