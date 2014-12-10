@@ -1,13 +1,17 @@
 [package]
 name = "rrun"
-version = "0.0.1"
-authors = []
+version = "0.0.2"
+authors = ["me@bstr.eu"]
+repository = "https://github.com/buster/rrun"
+keywords = ["gtk", "tool", "bash"]
+license = "GPL-3.0+"
+description = "minimalistic command launcher in rust similar to gmrun"
 
 [dependencies.rgtk]
 git = "git://github.com/buster/rgtk.git"
 branch = "modifier-enums-reform"
 #git = "git://github.com/jeremyletang/rgtk.git"
-path = "../rgtk/"
+#path = "../rgtk/"
 features = ["GTK_3_12"]
 
 [[bin]]
