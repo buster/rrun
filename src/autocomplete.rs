@@ -17,7 +17,7 @@ impl AutoCompleter for BashAutoCompleter {
             current_completed_cmd: None,
             remaining_completions: vec![]
         }
-    }    
+    }
 
     fn complete_next(&mut self) -> Option<String>{
         return self.remaining_completions.pop()
@@ -43,4 +43,3 @@ fn test_bash_compgen() {
     assert!(new_completion.complete_next() != None);
     assert_eq!(new_completion.complete_new("Undefined_Command That does not exist"), None);
 }
-
