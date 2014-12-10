@@ -1,0 +1,26 @@
+[root]
+name = "rrun"
+version = "0.0.2"
+dependencies = [
+ "rgtk 0.0.1 (git+git://github.com/jeremyletang/rgtk.git)",
+]
+
+[[package]]
+name = "gcc"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "pkg-config"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "rgtk"
+version = "0.0.1"
+source = "git+git://github.com/jeremyletang/rgtk.git#2882087de9489c4ffed50bb678723ebabad0d38e"
+dependencies = [
+ "gcc 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "pkg-config 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+

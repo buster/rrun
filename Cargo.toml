@@ -8,9 +8,9 @@ license = "GPL-3.0+"
 description = "minimalistic command launcher in rust similar to gmrun"
 
 [dependencies.rgtk]
-git = "git://github.com/buster/rgtk.git"
-branch = "modifier-enums-reform"
-#git = "git://github.com/jeremyletang/rgtk.git"
+#git = "git://github.com/buster/rgtk.git"
+#branch = "modifier-enums-reform"
+git = "git://github.com/jeremyletang/rgtk.git"
 #path = "../rgtk/"
 features = ["GTK_3_12"]
 

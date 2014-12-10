@@ -44,6 +44,7 @@ fn main() {
                         entry.set_position(-1);
                     }
 
+
                 }
                 else {
                     execution::execute(cmd, true);
