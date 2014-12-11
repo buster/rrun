@@ -3,17 +3,17 @@ default: all
 all: clean build
 
 build: rustup
-	cargo build --release
+	/usr/local/bin/cargo build --release
 
 rustup:
 	curl -s https://static.rust-lang.org/rustup.sh | sudo sh
 
 test:
-	cargo test
+	/usr/local/bin/cargo test
 
 install:
 	install -m 0755 target/release/rrun $(prefix)/bin
 
 clean: rustup
-	cargo clean
+	/usr/local/bin/cargo clean
 	git clean -f
