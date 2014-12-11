@@ -10,7 +10,6 @@ rrun (0.0.4) UNRELEASED; urgency=medium
   * sudo rust install
   * add sudo to build-depends
   * fix Makefile to use DESTDIR
-  * fix Makefile to use DESTDIR
 
  -- Sebastian Schulze <me@bstr.eu>  Thu, 11 Dec 2014 15:47:56 +0100
 
