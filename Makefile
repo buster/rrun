@@ -12,7 +12,7 @@ test:
 	cargo test
 
 install:
-	install -m 0755 target/release/rrun $(prefix)/bin
+	install -m 0755 target/release/rrun $(DESTDIR)$(bindir)/rrun
 
 clean: rustup
 	cargo clean
