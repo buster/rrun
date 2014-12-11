@@ -1,3 +1,17 @@
+rrun (0.0.4) UNRELEASED; urgency=medium
+
+  * tag v0.0.3 append commands to bash history add cargo.lock
+  * Added blank Debian package template
+  * first Makefile and debian package files
+  * point to usr/local for cargo
+  * verbose build with cargo
+  * install rust/cargo in /usr
+  * remove path from cargo call
+  * sudo rust install
+  * add sudo to build-depends
+
+ -- Sebastian Schulze <me@bstr.eu>  Thu, 11 Dec 2014 15:47:56 +0100
+
 rrun (0.0.3) unstable; urgency=low
 
   * Initial Release.

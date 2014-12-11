@@ -10,7 +10,7 @@ Vcs-Git: https://github.com/buster/rrun.git
 
 Package: rrun
 Architecture: amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}, bash, libgtk-3-0
+Depends: ${shlibs:Depends}, ${misc:Depends}, bash, libgtk-3-0, bash-completion
 Description: minimalistic command launcher in rust similar to gmrun
   Press Ctrl + Return to display output in window, else rrun will close after execution.
   Will append to ~/.bash_history.
