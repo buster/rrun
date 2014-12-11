@@ -11,7 +11,7 @@
 #                    <...>
 ### END INIT INFO
 
-# Author: Sebastian Schulze <buster@Fry>
+# Author: Sebastian Schulze <me@bstr.eu>
 
 # Do NOT "set -e"
 

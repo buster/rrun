@@ -1,15 +1,16 @@
 Source: rrun
-Section: unknown
+Section: main
 Priority: optional
-Maintainer: Sebastian Schulze <buster@Fry>
-Build-Depends: debhelper (>= 9)
+Maintainer: Sebastian Schulze <me@bstr.eu>
+Build-Depends: debhelper (>= 9), libgtk-3-dev, git, curl
 Standards-Version: 3.9.5
-Homepage: <insert the upstream URL, if relevant>
-#Vcs-Git: git://anonscm.debian.org/collab-maint/rrun.git
+Homepage: https://github.com/buster/rrun
+Vcs-Git: https://github.com/buster/rrun.git
 #Vcs-Browser: http://anonscm.debian.org/?p=collab-maint/rrun.git;a=summary
 
 Package: rrun
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}, bash, libgtk-3-0
+Description: minimalistic command launcher in rust similar to gmrun
+  Press Ctrl + Return to display output in window, else rrun will close after execution.
+  Will append to ~/.bash_history.

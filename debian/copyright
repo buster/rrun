@@ -1,14 +1,13 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: rrun
-Source: <url://example.com>
+Source: https://github.com/buster/rrun
 
 Files: *
-Copyright: <years> <put author's name and email here>
-           <years> <likewise for another author>
+Copyright: 2014 Sebastian Schulze
 License: GPL-3.0+
 
 Files: debian/*
-Copyright: 2014 Sebastian Schulze <buster@Fry>
+Copyright: 2014 Sebastian Schulze <me@bstr.eu>
 License: GPL-3.0+
 
 License: GPL-3.0+
