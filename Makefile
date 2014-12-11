@@ -6,7 +6,7 @@ build: rustup
 	cargo build --release --verbose
 
 rustup:
-	curl -s https://static.rust-lang.org/rustup.sh | sh -s -- --prefix=/usr/
+	curl -s https://static.rust-lang.org/rustup.sh | sudo sh -s -- --prefix=/usr/
 
 test:
 	cargo test
