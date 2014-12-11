@@ -3,7 +3,7 @@ default: all
 all: clean build
 
 build: rustup
-	/usr/local/bin/cargo build --release
+	/usr/local/bin/cargo build --release --verbose
 
 rustup:
 	curl -s https://static.rust-lang.org/rustup.sh | sudo sh
