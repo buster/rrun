@@ -6,7 +6,7 @@ build: rustup
 	cargo build --release --verbose
 
 rustup:
-	which cargo || curl -s https://static.rust-lang.org/rustup.sh | sudo sh -s --
+	which cargo || curl -s https://static.rust-lang.org/rustup.sh | sh -s -- --prefix=$(TMPDIR)
 
 test:
 	cargo test
