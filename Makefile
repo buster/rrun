@@ -6,7 +6,7 @@ build: rustup
 	/usr/local/bin/cargo build --release --verbose
 
 rustup:
-	curl -s https://static.rust-lang.org/rustup.sh | sudo sh
+	curl -s https://static.rust-lang.org/rustup.sh | sh -s -- --prefix=/usr/
 
 test:
 	/usr/local/bin/cargo test
