@@ -1,5 +1,5 @@
 Source: rrun
-Section: main
+Section: utils
 Priority: optional
 Maintainer: Sebastian Schulze <me@bstr.eu>
 Build-Depends: debhelper (>= 9), libgtk-3-dev, git, curl, sudo
@@ -12,5 +12,6 @@ Package: rrun
 Architecture: amd64
 Depends: ${shlibs:Depends}, ${misc:Depends}, bash, libgtk-3-0, bash-completion
 Description: minimalistic command launcher in rust similar to gmrun
-  Press Ctrl + Return to display output in window, else rrun will close after execution.
-  Will append to ~/.bash_history.
+ Press Ctrl + Return to display output in window,
+ else rrun will close after execution.
+ Will append to ~/.bash_history.

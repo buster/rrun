@@ -1,2 +1,2 @@
-?package(rrun):needs="X11|text|vc|wm" section="Applications/see-menu-manual"\
+?package(rrun):needs="X11|text|vc|wm" section="Applications/Shells"\
   title="rrun" command="/usr/bin/rrun"
