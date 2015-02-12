@@ -2,25 +2,37 @@
 name = "rrun"
 version = "0.0.3"
 dependencies = [
+ "log 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "rgtk 0.0.1 (git+git://github.com/jeremyletang/rgtk.git)",
 ]
 
 [[package]]
+name = "c_vec"
+version = "1.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
 name = "gcc"
-version = "0.1.1"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "log"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "pkg-config"
-version = "0.1.1"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "rgtk"
 version = "0.0.1"
-source = "git+git://github.com/jeremyletang/rgtk.git#2882087de9489c4ffed50bb678723ebabad0d38e"
+source = "git+git://github.com/jeremyletang/rgtk.git#cbb9c869ddd9d2830d4ede4dd0c7275cc837e9c4"
 dependencies = [
- "gcc 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "pkg-config 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "c_vec 1.0.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gcc 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "pkg-config 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 

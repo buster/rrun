@@ -1,12 +1,14 @@
 #![feature(globs)]
+#![feature(libc)]
+
 #![crate_type = "bin"]
-#![feature(phase)]
-#[phase(plugin, link)] extern crate log;
+#[macro_use]
+extern crate log;
 extern crate rgtk;
 extern crate libc;
 
 use rgtk::*;
-use rgtk::gtk::signals;
+use rgtk::gtk::signals::{DeleteEvent,KeyPressEvent};
 use rgtk::gdk::key;
 use rgtk::gdk::enums::modifier_type;
 use autocomplete::{BashAutoCompleter, AutoCompleter};
@@ -25,7 +27,7 @@ fn main() {
     let mut autocompleter: BashAutoCompleter = AutoCompleter::new();
     let mut last_pressed_key: u32 = 0;
 
-    window.connect(signals::KeyPressEvent::new(|key|{
+    Connect::connect(&window, KeyPressEvent::new(&mut |key| {
         let keyval = unsafe { (*key).keyval };
         let keystate = unsafe { (*key).state };
         debug!("key pressed: {}", keyval);
@@ -33,14 +35,14 @@ fn main() {
             key::Escape => gtk::main_quit(),
             key::Return => {
                 let cmd = entry.get_text().unwrap();
-                debug!("keystate: {}", keystate);
-                debug!("Controlmask == {}", modifier_type::ControlMask);
+                debug!("keystate: {:?}", keystate);
+                debug!("Controlmask == {:?}", modifier_type::ControlMask);
                 if keystate.intersects(modifier_type::ControlMask) {
                     debug!("ctrl pressed!");
                     let output = execution::execute(cmd, false);
                     if output.is_some() {
                         let output = output.unwrap();
-                        entry.set_text(output.trim().into_string());
+                        entry.set_text(output.trim().to_string());
                         entry.set_position(-1);
                     }
 
@@ -63,7 +65,7 @@ fn main() {
                 }
 
                 if completion.is_some() {
-                    entry.set_text(completion.unwrap().trim().into_string());
+                    entry.set_text(completion.unwrap().trim().to_string());
                     entry.set_position(-1);
                     last_pressed_key = 65289;
                     return true;
@@ -75,7 +77,8 @@ fn main() {
         return false
     }));
 
-    window.connect(signals::DeleteEvent::new(|_|{
+
+    Connect::connect(&window, DeleteEvent::new(&mut |&: _|{
         gtk::main_quit();
         true
     }));

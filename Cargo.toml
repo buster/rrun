@@ -14,5 +14,8 @@ git = "git://github.com/jeremyletang/rgtk.git"
 #path = "../rgtk/"
 features = ["GTK_3_12"]
 
+[dependencies]
+log = "*"
+
 [[bin]]
 name = "rrun"

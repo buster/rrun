@@ -29,9 +29,9 @@ impl AutoCompleter for BashAutoCompleter {
         //convert return string to vector and set self
         if bash_completions.is_none() { return None };
         for line in bash_completions.unwrap().lines() {
-            self.remaining_completions.push(line.into_string());
+            self.remaining_completions.push(line.to_string());
         }
-        self.current_completed_cmd = Some(cmd_string.into_string());
+        self.current_completed_cmd = Some(cmd_string.to_string());
         return self.complete_next()
     }
 }
@@ -39,7 +39,7 @@ impl AutoCompleter for BashAutoCompleter {
 #[test]
 fn test_bash_compgen() {
     let mut new_completion: BashAutoCompleter = AutoCompleter::new();
-    assert_eq!(new_completion.complete_new("which"), Some("which".into_string()));
+    assert_eq!(new_completion.complete_new("which"), Some("which".to_string()));
     assert!(new_completion.complete_next() != None);
     assert_eq!(new_completion.complete_new("Undefined_Command That does not exist"), None);
 }

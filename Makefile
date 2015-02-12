@@ -1,3 +1,6 @@
+export LD_LIBRARY_PATH+=$(DESTDIR)/tmp/lib
+export PATH+=$(DESTDIR)/tmp/bin
+
 default: all
 
 all: clean build
@@ -6,7 +9,7 @@ build: rustup
 	cargo build --release --verbose
 
 rustup:
-	which cargo || curl -s https://static.rust-lang.org/rustup.sh | sh -s -- --prefix=$(TMPDIR)
+	curl -s https://static.rust-lang.org/rustup.sh | sh -s -- --prefix=$(DESTDIR)/tmp
 
 test:
 	cargo test
