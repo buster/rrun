@@ -10,6 +10,16 @@ rrun (0.0.4) UNRELEASED; urgency=medium
   * sudo rust install
   * add sudo to build-depends
   * fix Makefile to use DESTDIR
+  * try with new cargo install in git-buildpackage
+  * update for latest rust
+  * update to latest rust
+  * catch errors on appending to history
+  * get rid of all warnings
+  * try with new cargo install in git-buildpackage
+  * update for latest rust
+  * update to latest rust
+  * catch errors on appending to history
+  * get rid of all warnings
 
  -- Sebastian Schulze <me@bstr.eu>  Thu, 11 Dec 2014 15:47:56 +0100
 
