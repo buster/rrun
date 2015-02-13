@@ -6,10 +6,10 @@ default: all
 all: build
 
 build: rustup
-	/tmp/bin/cargo build --release --verbose
+	$(DESTDIR)/tmp/bin/cargo build --release --verbose
 
 rustup:
-	curl -s https://static.rust-lang.org/rustup.sh | /bin/bash -s -- --prefix=$(DESTDIR)/tmp
+	curl -s https://static.rust-lang.org/rustup.sh | $(DESTDIR)/bin/bash -s -- --prefix=$(DESTDIR)/tmp
 
 test:
 	cargo test
