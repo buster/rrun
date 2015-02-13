@@ -3,7 +3,7 @@ export PATH+=$(DESTDIR)/tmp/bin
 
 default: all
 
-all: clean build
+all: build
 
 build: rustup
 	cargo build --release --verbose
@@ -18,5 +18,5 @@ install:
 	mkdir -p $(DESTDIR)/usr/bin
 	install -m 0755 target/release/rrun $(DESTDIR)/usr/bin/rrun
 
-clean: 
-	git clean -f
+#clean: 
+#	git clean -f
