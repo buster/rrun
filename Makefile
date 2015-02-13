@@ -18,6 +18,5 @@ install:
 	mkdir -p $(DESTDIR)/usr/bin
 	install -m 0755 target/release/rrun $(DESTDIR)/usr/bin/rrun
 
-clean: rustup
-	cargo clean
+clean: 
 	git clean -f
