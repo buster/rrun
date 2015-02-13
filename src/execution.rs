@@ -5,7 +5,7 @@ use std::old_io::{File, Append, Write};
 use std::ffi::OsString;
 
 fn append_to_history(cmd: &str) {
-    let h_file = env::var("HISTFILE").unwrap_or(OsString::from_string(".bash_history".to_string())).into_string().unwrap_or_else(|_| { panic!("the end is near!!!")});
+    let h_file = env::var("HISTFILE").unwrap_or(".bash_history".to_string());
     let h_dir = env::home_dir().unwrap_or_else(|| { panic!("unable to get homedir!") } );
     let h_file_p = h_dir.join(h_file);
     println!("history file: {}", h_file_p.display());

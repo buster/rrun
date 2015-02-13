@@ -13,7 +13,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "gcc"
-version = "0.2.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
@@ -23,7 +23,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "pkg-config"
-version = "0.2.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
@@ -32,7 +32,7 @@ version = "0.0.1"
 source = "git+git://github.com/jeremyletang/rgtk.git#cbb9c869ddd9d2830d4ede4dd0c7275cc837e9c4"
 dependencies = [
  "c_vec 1.0.3 (registry+https://github.com/rust-lang/crates.io-index)",
- "gcc 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "pkg-config 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gcc 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "pkg-config 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
