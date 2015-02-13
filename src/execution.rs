@@ -7,7 +7,7 @@ fn append_to_history(cmd: &str) -> IoResult<()> {
     let h_file = env::var("HISTFILE").unwrap_or(".bash_history".to_string());
     let h_dir = env::home_dir().unwrap_or_else(|| { panic!("unable to get homedir!") } );
     let h_file_p = h_dir.join(h_file);
-    println!("history file: {}", h_file_p.display());
+    debug!("opening history file: {}", h_file_p.display());
     let mut file = try!(File::open_mode(&h_file_p, Append, Write));
     try!(file.write_line(cmd));
     try!(file.fsync());

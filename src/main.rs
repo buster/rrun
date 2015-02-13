@@ -1,4 +1,7 @@
 #![feature(libc)]
+#![feature(io)]
+#![feature(env)]
+#![feature(path)]
 #![crate_type = "bin"]
 #[macro_use]
 extern crate log;
@@ -53,19 +56,15 @@ fn main() {
 
             },
             key::Tab => {
-                let mut completion = None;
-                // last pressed key was TAB, so we want to get the next completion
-                if last_pressed_key == key::Tab {
-                    completion = autocompleter.complete_next();
-                }
-                else {
-                    completion = autocompleter.complete_new(&entry.get_text().unwrap());
-                }
+                let completion = match last_pressed_key {
+                    key::Tab => autocompleter.complete_next(),
+                    _ => autocompleter.complete_new(&entry.get_text().unwrap())
+                };
 
                 if completion.is_some() {
                     entry.set_text(completion.unwrap().trim().to_string());
                     entry.set_position(-1);
-                    last_pressed_key = 65289;
+                    last_pressed_key = key::Tab;
                     return true;
                 }
             },
