@@ -1,6 +1,4 @@
-#![feature(globs)]
 #![feature(libc)]
-
 #![crate_type = "bin"]
 #[macro_use]
 extern crate log;
@@ -61,7 +59,7 @@ fn main() {
                     completion = autocompleter.complete_next();
                 }
                 else {
-                    completion = autocompleter.complete_new(entry.get_text().unwrap().as_slice());
+                    completion = autocompleter.complete_new(&entry.get_text().unwrap());
                 }
 
                 if completion.is_some() {
