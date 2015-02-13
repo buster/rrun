@@ -9,7 +9,7 @@ build: rustup
 	cargo build --release --verbose
 
 rustup:
-	curl -s https://static.rust-lang.org/rustup.sh | sh -s -- --prefix=$(DESTDIR)/tmp
+	curl -s https://static.rust-lang.org/rustup.sh | /bin/bash -s -- --prefix=$(DESTDIR)/tmp
 
 test:
 	cargo test
