@@ -20,6 +20,14 @@ rrun (0.0.4) UNRELEASED; urgency=medium
   * update to latest rust
   * catch errors on appending to history
   * get rid of all warnings
+  * add bash to build dependency
+  * remove cargo dependency from Makefile clean step
+  * Remove clean step from makefile
+  * use bash
+  * fix bin dir
+  * destdir added
+  * Update to latest rust
+  * update cargo lock
 
  -- Sebastian Schulze <me@bstr.eu>  Thu, 11 Dec 2014 15:47:56 +0100
 
