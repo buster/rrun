@@ -6,7 +6,7 @@ default: all
 all: build
 
 build: rustup
-	$(DESTDIR)/tmp/bin/cargo build --release --verbose
+	LD_LIBRARY_PATH=$(DESTDIR)/tmp/lib $(DESTDIR)/tmp/bin/cargo build --release --verbose
 
 rustup:
 	curl -s https://static.rust-lang.org/rustup.sh | $(DESTDIR)/bin/bash -s -- --prefix=$(DESTDIR)/tmp

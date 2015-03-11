@@ -16,6 +16,7 @@ features = ["GTK_3_12"]
 
 [dependencies]
 log = "*"
+env_logger = "*"
 
 [[bin]]
 name = "rrun"

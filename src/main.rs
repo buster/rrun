@@ -1,10 +1,10 @@
 #![feature(libc)]
 #![feature(io)]
-#![feature(env)]
 #![feature(path)]
 #![crate_type = "bin"]
 #[macro_use]
 extern crate log;
+extern crate env_logger;
 extern crate rgtk;
 extern crate libc;
 
@@ -18,6 +18,7 @@ mod execution;
 
 
 fn main() {
+    env_logger::init().unwrap();
     gtk::init();
     debug!("GTK VERSION: Major: {}, Minor: {}", gtk::get_major_version(), gtk::get_minor_version());
     let mut window = gtk::Window::new(gtk::WindowType::TopLevel).unwrap();
@@ -75,7 +76,7 @@ fn main() {
     }));
 
 
-    Connect::connect(&window, DeleteEvent::new(&mut |&: _|{
+    Connect::connect(&window, DeleteEvent::new(&mut |_|{
         gtk::main_quit();
         true
     }));

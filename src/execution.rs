@@ -1,42 +1,44 @@
-use std::old_io::Command;
-use std::old_io::process;
+use std::process::Command;
 use std::env;
-use std::old_io::{File, Append, Write, IoResult};
+use std::process::Output;
+use std::fs;
+use std::io::Result;
+use std::io::Write;
+use std::str::StrExt;
 
-fn append_to_history(cmd: &str) -> IoResult<()> {
+fn append_to_history(cmd: &str) -> Result<()> {
     let h_file = env::var("HISTFILE").unwrap_or(".bash_history".to_string());
-    let h_dir = env::home_dir().unwrap_or_else(|| { panic!("unable to get homedir!") } );
-    let h_file_p = h_dir.join(h_file);
-    debug!("opening history file: {}", h_file_p.display());
-    let mut file = try!(File::open_mode(&h_file_p, Append, Write));
-    try!(file.write_line(cmd));
-    try!(file.fsync());
+    let mut h_path = env::home_dir().unwrap_or_else(|| { panic!("unable to get homedir!") } );
+    h_path.push(&h_file);
+    debug!("opening history file: {:?}", h_path);
+    let mut file = try!(fs::OpenOptions::new().write(true).append(true).open(&h_path));
+
+    try!(file.write(cmd.as_bytes()));
+    try!(file.write("\n".as_bytes()));
+    try!(file.sync_data());
     return Ok(());
 }
 
-pub fn execute(cmd: String, forget: bool) -> Option<String> {
+pub fn execute(cmd: String, forget_stdout: bool) -> Option<String> {
     debug!("executing: {}", cmd);
-    let mut process = match Command::new("bash").arg("-c").arg(cmd.clone()).spawn() {
-      Ok(p) => p,
-      Err(e) => panic!("failed to execute process: {}", e),
-    };
-    let _ = match append_to_history(&cmd) {
-        Err(e) => error!("Unable to append to history: {}", e),
-        Ok(()) => debug!("wrote to history")
-    };
+    if !cmd.starts_with("compgen") {
+        let _ = match append_to_history(&cmd) {
+            Err(e) => error!("Unable to append to history: {}", e),
+            Ok(()) => debug!("wrote to history")
+        };
+    }
 
-    if forget {
-        process.forget();
+    if forget_stdout {
+        Command::new("bash").arg("-c").arg(&cmd).spawn().unwrap_or_else(|_| {panic!("unable to spawn!")});
         return None;
     }
-
-    let output = process.stdout.as_mut().unwrap().read_to_end().unwrap();
-    let out_str = String::from_utf8_lossy(&output).to_string();
-    let result = process.wait();
-    debug!("result: {:?}", result);
-    match result {
-        Ok(process::ExitStatus(0)) => Some(out_str),
-        _ => None
+    else {
+        let Output {status, stdout, .. } = Command::new("bash").arg("-c").arg(&cmd).output().unwrap();
+        println!("out: {:?}", stdout);
+        if status.success() {
+            return Some(String::from_utf8_lossy(&stdout).into_owned())
+        }
     }
 
+    None
 }
