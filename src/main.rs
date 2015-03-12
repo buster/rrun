@@ -15,6 +15,7 @@ mod autocomplete;
 mod execution;
 
 
+#[cfg(not(test))]
 fn main() {
     env_logger::init().unwrap();
     gtk::init();
