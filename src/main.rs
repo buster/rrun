@@ -1,6 +1,4 @@
 #![feature(libc)]
-#![feature(io)]
-#![feature(path)]
 #![crate_type = "bin"]
 #[macro_use]
 extern crate log;
