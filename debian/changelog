@@ -1,9 +1,10 @@
-rrun (0.0.5~2.gbp5081a1) UNRELEASED; urgency=medium
+rrun (0.0.5~3.gbpd1b889) UNRELEASED; urgency=medium
 
-  ** SNAPSHOT build @5081a17cf668e6df7c6402ca3870641df5a5ed98 **
+  ** SNAPSHOT build @d1b8892fbb53805bc6b4d4cb3cffa0a525950507 **
 
   * add buildpackage commands to Makefile
   * Update changelog for 0.0.5~1.gbp9d8473 release
+  * Update changelog for 0.0.5~2.gbp5081a1 release
 
  -- Sebastian Schulze <me@bstr.eu>  Thu, 12 Mar 2015 15:54:07 +0100
 
