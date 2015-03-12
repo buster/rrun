@@ -1,8 +1,9 @@
-rrun (0.0.5~1.gbp9d8473) UNRELEASED; urgency=medium
+rrun (0.0.5~2.gbp5081a1) UNRELEASED; urgency=medium
 
-  ** SNAPSHOT build @9d8473d2e533a8c63e364abc24aaa17c2872d05f **
+  ** SNAPSHOT build @5081a17cf668e6df7c6402ca3870641df5a5ed98 **
 
   * add buildpackage commands to Makefile
+  * Update changelog for 0.0.5~1.gbp9d8473 release
 
  -- Sebastian Schulze <me@bstr.eu>  Thu, 12 Mar 2015 15:54:07 +0100
 
@@ -40,7 +41,7 @@ rrun (0.0.4) unstable; urgency=medium
   * prevent warning of unused main() in tests
   * Make fixes for .deb builds
 
- -- Sebastian Schulze <buster@Fry>  Thu, 12 Mar 2015 15:40:25 +0100
+ -- Sebastian Schulze <me@bstr.eu>  Thu, 12 Mar 2015 15:40:25 +0100
 
 rrun (0.0.3) unstable; urgency=low
 
