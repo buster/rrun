@@ -1,4 +1,4 @@
-rrun (0.0.4) UNRELEASED; urgency=medium
+rrun (0.0.4) unstable; urgency=medium
 
   * tag v0.0.3 append commands to bash history add cargo.lock
   * Added blank Debian package template
@@ -28,8 +28,11 @@ rrun (0.0.4) UNRELEASED; urgency=medium
   * destdir added
   * Update to latest rust
   * update cargo lock
+  * Append history with "bash -c" instead of manual writing into bash history
+  * prevent warning of unused main() in tests
+  * Make fixes for .deb builds
 
- -- Sebastian Schulze <me@bstr.eu>  Thu, 11 Dec 2014 15:47:56 +0100
+ -- Sebastian Schulze <buster@Fry>  Thu, 12 Mar 2015 15:35:57 +0100
 
 rrun (0.0.3) unstable; urgency=low
 
