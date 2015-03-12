@@ -1,3 +1,11 @@
+rrun (0.0.5~1.gbp9d8473) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @9d8473d2e533a8c63e364abc24aaa17c2872d05f **
+
+  * add buildpackage commands to Makefile
+
+ -- Sebastian Schulze <me@bstr.eu>  Thu, 12 Mar 2015 15:54:07 +0100
+
 rrun (0.0.4) unstable; urgency=medium
 
   * tag v0.0.3 append commands to bash history add cargo.lock
