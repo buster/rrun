@@ -1,22 +1,24 @@
-export LD_LIBRARY_PATH+=$(DESTDIR)/tmp/lib
-export PATH+=$(DESTDIR)/tmp/bin
+LD_LIBRARY_PATH := $(DESTDIR)/tmp/lib
+PATH := $(DESTDIR)/tmp/bin:${PATH}
+
+.EXPORT_ALL_VARIABLES:
 
 default: all
 
 all: build
 
 build: rustup
-	LD_LIBRARY_PATH=$(DESTDIR)/tmp/lib $(DESTDIR)/tmp/bin/cargo build --release --verbose
+	$(DESTDIR)/tmp/bin/cargo build --release --verbose
 
 rustup:
-	curl -s https://static.rust-lang.org/rustup.sh | $(DESTDIR)/bin/bash -s -- --prefix=$(DESTDIR)/tmp
+	curl -L https://static.rust-lang.org/rustup.sh | bash -s -- --prefix=$(DESTDIR)/tmp/
 
 test:
-	cargo test
+	$(DESTDIR)/tmp/bin/cargo test
 
 install:
 	mkdir -p $(DESTDIR)/usr/bin
 	install -m 0755 target/release/rrun $(DESTDIR)/usr/bin/rrun
 
-#clean: 
-#	git clean -f
+deb:
+	git-buildpackage --git-upstream-branch=master --git-debian-branch=master --git-ignore-new --git-pbuilder
