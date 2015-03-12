@@ -32,7 +32,7 @@ rrun (0.0.4) unstable; urgency=medium
   * prevent warning of unused main() in tests
   * Make fixes for .deb builds
 
- -- Sebastian Schulze <buster@Fry>  Thu, 12 Mar 2015 15:35:57 +0100
+ -- Sebastian Schulze <buster@Fry>  Thu, 12 Mar 2015 15:40:25 +0100
 
 rrun (0.0.3) unstable; urgency=low
 
