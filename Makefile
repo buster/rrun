@@ -25,7 +25,7 @@ deb:
 
 release:
 	git-dch -a -c -R --full 
-	git-buildpackage --git-upstream-branch=master --git-debian-branch=master --git-ignore-new --git-pbuilder --git-tag --git-debian-tag="v%(version)s"
+	git-buildpackage --git-upstream-branch=master --git-debian-branch=master --git-pbuilder --git-tag --git-debian-tag="v%(version)s"
 
 snapshot:
 	git-dch -a -S --full
