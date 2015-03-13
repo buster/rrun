@@ -28,5 +28,7 @@ release:
 	git-buildpackage --git-upstream-branch=master --git-debian-branch=master --git-ignore-new --git-pbuilder --git-tag --git-debian-tag="v%(version)s"
 
 snapshot:
-	git-dch -a -c -S --full
+	git-dch -a -S --full
 	git-buildpackage --git-upstream-branch=master --git-debian-branch=master --git-ignore-new --git-pbuilder  --git-debian-tag="v%(version)s"
+
+
