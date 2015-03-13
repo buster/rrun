@@ -1,10 +1,20 @@
-rrun (0.0.5~3.gbpd1b889) UNRELEASED; urgency=medium
+rrun (0.0.5~4.gbpbd0ece) UNRELEASED; urgency=medium
 
+  ** SNAPSHOT build @bd0ece73b71b59177bf807cd6ce8e4065fc3c410 **
+
+  [ Sebastian Schulze ]
   ** SNAPSHOT build @d1b8892fbb53805bc6b4d4cb3cffa0a525950507 **
 
   * add buildpackage commands to Makefile
   * Update changelog for 0.0.5~1.gbp9d8473 release
   * Update changelog for 0.0.5~2.gbp5081a1 release
+  * Update changelog for 0.0.5~3.gbpd1b889 release
+  * change tag version format
+
+  [ buster ]
+  * Update README.rst
+
+  [ Sebastian Schulze ]
 
  -- Sebastian Schulze <me@bstr.eu>  Thu, 12 Mar 2015 15:54:07 +0100
 
