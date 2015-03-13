@@ -3,7 +3,8 @@ rrun
 
 Requires GTK 3.10+
 
-( Build fails since Travis uses Ubuntu 12.04 with no GTK3.10 available: https://github.com/travis-ci/travis-ci/issues/2046  )
+( Build fails since Travis uses Ubuntu 12.04 with no GTK3.10 available: https://github.com/travis-ci/travis-ci/issues/2046  )#
+
 .. image:: https://travis-ci.org/buster/rrun.svg?branch=master
     :target: https://travis-ci.org/buster/rrun
 
