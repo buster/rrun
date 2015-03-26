@@ -16,7 +16,7 @@ rrun (0.0.5) unstable; urgency=medium
   * remove examples
   * update changelog
 
- -- Sebastian Schulze <buster@Fry>  Thu, 26 Mar 2015 16:50:21 +0100
+ -- Sebastian Schulze <me@bstr.eu>  Thu, 26 Mar 2015 16:50:21 +0100
 
 rrun (0.0.4) unstable; urgency=medium
 
