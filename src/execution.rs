@@ -1,10 +1,10 @@
 use std::process::Command;
 use std::process::Output;
-use std::str::StrExt;
+// use std::str::StrExt;
 
 pub fn execute(cmd: String, forget_stdout: bool) -> Option<String> {
     debug!("executing: {}", cmd);
-    if !cmd.starts_with("compgen") {
+    if !cmd.starts_with("compgen") && !cmd.starts_with("history ") {
         let mut hist_cmd = "(history -s ".to_string();
         hist_cmd.push_str(&cmd);
         hist_cmd.push_str("; history -a)");

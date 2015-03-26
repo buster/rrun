@@ -7,6 +7,7 @@ pub trait AutoCompleter {
 }
 
 pub struct BashAutoCompleter {
+    current_history: Vec<String>,
     current_completed_cmd: Option<String>,
     remaining_completions: Vec<String>
 }
@@ -15,7 +16,8 @@ impl AutoCompleter for BashAutoCompleter {
     fn new() -> BashAutoCompleter {
         return BashAutoCompleter {
             current_completed_cmd: None,
-            remaining_completions: vec![]
+            remaining_completions: vec![],
+            current_history: vec![]
         }
     }
 
@@ -24,6 +26,16 @@ impl AutoCompleter for BashAutoCompleter {
     }
 
     fn complete_new(&mut self, cmd_string: &str) -> Option<String>{
+        let history = execution::execute("(history)".to_string(), false);
+        debug!("cmd string: {}", cmd_string);
+        for line in history.unwrap().lines() {
+            debug!("found history {}", line);
+            if line.starts_with(cmd_string) {
+
+                self.remaining_completions.push(line.to_string());
+            }
+        }
+
         //returns a new completion based on the passed string
         let bash_completions = execution::execute(format!("compgen -A command {}", cmd_string), false);
         //convert return string to vector and set self

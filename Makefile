@@ -5,7 +5,7 @@ PATH := $(DESTDIR)/tmp/bin:${PATH}
 
 default: all
 
-all: build
+all: clean build
 
 build: rustup
 	$(DESTDIR)/tmp/bin/cargo build --release --verbose
@@ -26,6 +26,9 @@ deb:
 release:
 	git-dch -a -c -R --full 
 	git-buildpackage --git-upstream-branch=master --git-debian-branch=master --git-pbuilder --git-tag --git-debian-tag="v%(version)s"
+
+clean:
+	rm -rf target
 
 snapshot:
 	git-dch -a -S --full

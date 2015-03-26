@@ -43,7 +43,7 @@ fn main() {
                     let output = execution::execute(cmd, false);
                     if output.is_some() {
                         let output = output.unwrap();
-                        entry.set_text(output.trim().to_string());
+                        entry.set_text(output.trim());
                         entry.set_position(-1);
                     }
 
@@ -62,7 +62,7 @@ fn main() {
                 };
 
                 if completion.is_some() {
-                    entry.set_text(completion.unwrap().trim().to_string());
+                    entry.set_text(completion.unwrap().trim());
                     entry.set_position(-1);
                     last_pressed_key = key::Tab;
                     return true;
