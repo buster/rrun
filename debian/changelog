@@ -1,6 +1,4 @@
-rrun (0.0.5~8.gbp57db33) UNRELEASED; urgency=medium
-
-  ** SNAPSHOT build @57db330eb8d8821f07123c77ee9c699985d7e99e **
+rrun (0.0.5) unstable; urgency=medium
 
   * add buildpackage commands to Makefile
   * change tag version format
@@ -13,8 +11,12 @@ rrun (0.0.5~8.gbp57db33) UNRELEASED; urgency=medium
   * add build dependency versions
   * updater copyright
   * remove examples
+  * add build dependency versions
+  * updater copyright
+  * remove examples
+  * update changelog
 
- -- Sebastian Schulze <me@bstr.eu>  Fri, 13 Mar 2015 13:23:21 +0100
+ -- Sebastian Schulze <buster@Fry>  Thu, 26 Mar 2015 16:50:21 +0100
 
 rrun (0.0.4) unstable; urgency=medium
 
