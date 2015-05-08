@@ -1,17 +1,22 @@
-#![feature(libc)]
 #![crate_type = "bin"]
 #[macro_use]
 extern crate log;
 extern crate env_logger;
-extern crate rgtk;
-extern crate libc;
+extern crate gtk;
+extern crate gdk;
 
-use rgtk::*;
-use rgtk::gtk::signals::{DeleteEvent,KeyPressEvent};
-use rgtk::gdk::key;
-use rgtk::gdk::enums::modifier_type;
-use autocomplete::{BashAutoCompleter, AutoCompleter};
+use std::rc::Rc;
+use std::cell::{Cell, RefCell};
+use gtk::signal::Inhibit;
+use gtk::traits::*;
+use gdk::enums::key;
+use gdk::enums::modifier_type;
+use bashautocompleter::BashAutoCompleter;
+// use historyautocompleter::HistoryAutoCompleter;
+use autocomplete::AutoCompleter;
 mod autocomplete;
+mod bashautocompleter;
+mod historyautocompleter;
 mod execution;
 
 
@@ -20,17 +25,29 @@ fn main() {
     env_logger::init().unwrap();
     gtk::init();
     debug!("GTK VERSION: Major: {}, Minor: {}", gtk::get_major_version(), gtk::get_minor_version());
-    let mut window = gtk::Window::new(gtk::WindowType::TopLevel).unwrap();
-    let mut entry = gtk::SearchEntry::new().unwrap();
+    let window = gtk::Window::new(gtk::WindowType::TopLevel).unwrap();
+    let entry = gtk::Entry::new().unwrap();
+
     window.set_title("rrun");
     window.set_window_position(gtk::WindowPosition::Center);
 
-    let mut autocompleter: BashAutoCompleter = AutoCompleter::new();
-    let mut last_pressed_key: u32 = 0;
 
-    Connect::connect(&window, KeyPressEvent::new(&mut |key| {
-        let keyval = unsafe { (*key).keyval };
-        let keystate = unsafe { (*key).state };
+    let autocompleter = Rc::new(RefCell::new(BashAutoCompleter::new()));
+    let last_pressed_key: Rc<Cell<u32>> = Rc::new(Cell::new(0));
+
+    window.connect_delete_event(|_, _| {
+        gtk::main_quit();
+        Inhibit(true)
+    });
+
+    window.set_decorated(false);
+    window.add(&entry);
+    window.set_border_width(0);
+    window.show_all();
+    window.connect_key_press_event(|_, key| {
+
+        let keyval: u32 = key.keyval;
+        let keystate = (*key).state;
         debug!("key pressed: {}", keyval);
         match keyval {
             key::Escape => gtk::main_quit(),
@@ -56,33 +73,23 @@ fn main() {
 
             },
             key::Tab => {
-                let completion = match last_pressed_key {
-                    key::Tab => autocompleter.complete_next(),
-                    _ => autocompleter.complete_new(&entry.get_text().unwrap())
+                let completion = match last_pressed_key.get() {
+                    key::Tab => autocompleter.borrow_mut().complete_next(),
+                    _ => autocompleter.borrow_mut().complete_new(&entry.get_text().unwrap())
                 };
 
                 if completion.is_some() {
                     entry.set_text(completion.unwrap().trim());
                     entry.set_position(-1);
-                    last_pressed_key = key::Tab;
-                    return true;
+                    last_pressed_key.set(key::Tab);
+                    return Inhibit(true);
                 }
             },
             _ => ()
         }
-        last_pressed_key = unsafe { (*key).keyval };
-        return false
-    }));
+        last_pressed_key.set((*key).keyval);
+        return Inhibit(false)
+    } );
 
-
-    Connect::connect(&window, DeleteEvent::new(&mut |_|{
-        gtk::main_quit();
-        true
-    }));
-
-    window.set_decorated(false);
-    window.add(&entry);
-    window.set_border_width(0);
-    window.show_all();
     gtk::main();
 }
