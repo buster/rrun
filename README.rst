@@ -12,7 +12,12 @@ minimalistic command launcher in rust similar to gmrun
 
 .. image:: rrun.gif
 
-Press Ctrl + Return to display output in window, else rrun will close after execution.
+Usage
+"""""
+
+- enter a command and press Return to execute it
+- press TAB for tab completion of available commands
+- Press Ctrl + Return to display the command output in the text field
 
 Set up rrun as command helper on Capslock
 """""""""""""""""""""""""""""""""""""""""
