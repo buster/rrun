@@ -7,14 +7,14 @@ default: all
 
 all: clean build
 
-build: rustup
-	$(DESTDIR)/tmp/bin/cargo build --release --verbose
+build: 
+	cargo build --release --verbose
 
-rustup:
-	curl -L https://static.rust-lang.org/rustup.sh | bash -s -- --prefix=$(DESTDIR)/tmp/ --disable-sudo
+#rustup:
+#	curl -L https://static.rust-lang.org/rustup.sh | bash -s -- --prefix=$(DESTDIR)/tmp/ --disable-sudo
 
 test:
-	$(DESTDIR)/tmp/bin/cargo test
+	cargo test
 
 install:
 	mkdir -p $(DESTDIR)/usr/bin
@@ -23,15 +23,16 @@ install:
 deb:
 	git-buildpackage --git-upstream-branch=master --git-debian-branch=master --git-ignore-new --git-pbuilder
 
+local-deb:
+	debuild --preserve-env --prepend-path=/usr/local/bin -d binary
+
 release:
-	git-dch -a -c -R --full 
+	git-dch -a -c -R --full --debian-tag="v%(version)s"
 	git-buildpackage --git-upstream-branch=master --git-debian-branch=master --git-pbuilder --git-tag --git-debian-tag="v%(version)s"
 
 clean:
 	rm -rf target
 
 snapshot:
-	git-dch -a -S --full
+	git-dch -a -S --full --debian-tag="v%(version)s"
 	git-buildpackage --git-upstream-branch=master --git-debian-branch=master --git-ignore-new --git-pbuilder  --git-debian-tag="v%(version)s"
-
-
