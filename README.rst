@@ -12,6 +12,11 @@ It will also append the commands being run to your bash history.
 
 .. image:: rrun.gif
 
+Installation
+""""""""""""
+
+Download a Debian package from https://github.com/buster/rrun/releases or compile yourself with "cargo build".
+
 Usage
 """""
 
