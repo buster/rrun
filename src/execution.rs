@@ -1,6 +1,5 @@
 use std::process::Command;
 use std::process::Output;
-// use std::str::StrExt;
 
 pub fn execute(cmd: String, forget_stdout: bool) -> Option<String> {
     debug!("executing: {}", cmd);
