@@ -1,3 +1,14 @@
+rrun (0.0.6~2.gbp9f448a) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @9f448ad5a8f6a04e44a573821f59fbf7edcd175d **
+
+  * update description and gif
+  * update for rust-gnome, rust beta and make compatible with GTK <3.10
+  * remove test for history completer
+  * remove history completion for now
+
+ -- Sebastian Schulze <me@bstr.eu>  Fri, 08 May 2015 15:12:34 +0200
+
 rrun (0.0.5) unstable; urgency=medium
 
   * add buildpackage commands to Makefile

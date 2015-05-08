@@ -1,6 +1,6 @@
 [root]
 name = "rrun"
-version = "0.0.5"
+version = "0.0.6"
 dependencies = [
  "env_logger 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "gdk 0.0.1 (git+https://github.com/rust-gnome/gdk)",

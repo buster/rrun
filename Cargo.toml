@@ -1,6 +1,6 @@
 [package]
 name = "rrun"
-version = "0.0.5"
+version = "0.0.6"
 authors = ["me@bstr.eu"]
 repository = "https://github.com/buster/rrun"
 keywords = ["gtk", "tool", "bash"]
@@ -9,7 +9,6 @@ description = "minimalistic command launcher in rust similar to gmrun"
 
 [dependencies.gtk]
 git = "https://github.com/rust-gnome/gtk"
-# features = ["gtk_3_10"]
 
 [dependencies.gdk]
 git = "https://github.com/rust-gnome/gdk"
@@ -18,10 +17,6 @@ default-features = false
 [dependencies]
 log = "*"
 env_logger = "*"
-
-
-# [features]
-# gtk_3_10 = ["gtk/gtk_3_10"]
 
 [[bin]]
 name = "rrun"
