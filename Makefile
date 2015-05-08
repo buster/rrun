@@ -11,7 +11,7 @@ build: rustup
 	$(DESTDIR)/tmp/bin/cargo build --release --verbose
 
 rustup:
-	curl -L https://static.rust-lang.org/rustup.sh | bash -s -- --prefix=$(DESTDIR)/tmp/
+	curl -L https://static.rust-lang.org/rustup.sh | bash -s -- --prefix=$(DESTDIR)/tmp/ --disable-sudo
 
 test:
 	$(DESTDIR)/tmp/bin/cargo test
