@@ -12,11 +12,9 @@ use gtk::traits::*;
 use gdk::enums::key;
 use gdk::enums::modifier_type;
 use bashautocompleter::BashAutoCompleter;
-// use historyautocompleter::HistoryAutoCompleter;
 use autocomplete::AutoCompleter;
 mod autocomplete;
 mod bashautocompleter;
-mod historyautocompleter;
 mod execution;
 
 
