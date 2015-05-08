@@ -17,8 +17,7 @@ mod autocomplete;
 mod bashautocompleter;
 mod execution;
 
-
-#[cfg(not(test))]
+#[allow(dead_code)]
 fn main() {
     env_logger::init().unwrap();
     gtk::init();
@@ -28,7 +27,6 @@ fn main() {
 
     window.set_title("rrun");
     window.set_window_position(gtk::WindowPosition::Center);
-
 
     let autocompleter = Rc::new(RefCell::new(BashAutoCompleter::new()));
     let last_pressed_key: Rc<Cell<u32>> = Rc::new(Cell::new(0));
