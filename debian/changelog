@@ -1,3 +1,14 @@
+rrun (0.0.7~8.gbp9376e8) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @9376e818708971859ed6f0e50566cfcf8223aeda **
+
+  * UNRELEASED
+  * Use GTK SearchEntry per default, but disable on Travis (which has an outdated GTK version)
+  * remove unused rustup.sh from Makefile
+  * remove space in Makefile
+
+ -- Sebastian Schulze <me@bstr.eu>  Mon, 11 May 2015 10:55:40 +0200
+
 rrun (0.0.6) unstable; urgency=medium
 
   * update description and gif
@@ -11,7 +22,7 @@ rrun (0.0.6) unstable; urgency=medium
     just takes too long to build a .deb.
     Rust needs to be installed  in the build chroot
 
- -- Sebastian Schulze <buster@Fry>  Fri, 08 May 2015 17:26:11 +0200
+ -- Sebastian Schulze <me@bstr.eu>  Fri, 08 May 2015 17:26:11 +0200
 
 rrun (0.0.5) unstable; urgency=medium
 
