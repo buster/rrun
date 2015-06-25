@@ -10,9 +10,6 @@ all: clean build
 build: 
 	cargo build --release --verbose
 
-#rustup:
-#	curl -L https://static.rust-lang.org/rustup.sh | bash -s -- --prefix=$(DESTDIR)/tmp/ --disable-sudo
-
 test:
 	cargo test
 
