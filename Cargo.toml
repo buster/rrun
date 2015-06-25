@@ -18,5 +18,9 @@ default-features = false
 log = "*"
 env_logger = "*"
 
+[features]
+default = ["search_entry"]
+search_entry = ["gtk/gtk_3_10"]
+
 [[bin]]
 name = "rrun"

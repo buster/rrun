@@ -17,13 +17,23 @@ mod autocomplete;
 mod bashautocompleter;
 mod execution;
 
+#[cfg(feature="search_entry")]
+fn get_entry_field() -> gtk::SearchEntry {
+    gtk::SearchEntry::new().unwrap()
+}
+
+#[cfg(not(feature="search_entry"))]
+fn get_entry_field() -> gtk::Entry {
+    gtk::Entry::new().unwrap()
+}
+
 #[allow(dead_code)]
 fn main() {
     env_logger::init().unwrap();
     gtk::init();
     debug!("GTK VERSION: Major: {}, Minor: {}", gtk::get_major_version(), gtk::get_minor_version());
     let window = gtk::Window::new(gtk::WindowType::TopLevel).unwrap();
-    let entry = gtk::Entry::new().unwrap();
+    let entry = get_entry_field();
 
     window.set_title("rrun");
     window.set_window_position(gtk::WindowPosition::Center);
@@ -40,7 +50,7 @@ fn main() {
     window.add(&entry);
     window.set_border_width(0);
     window.show_all();
-    window.connect_key_press_event(|_, key| {
+    window.connect_key_press_event(move |_, key| {
 
         let keyval: u32 = key.keyval;
         let keystate = (*key).state;
