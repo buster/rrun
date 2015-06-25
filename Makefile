@@ -7,7 +7,7 @@ default: all
 
 all: clean build
 
-build: 
+build:
 	cargo build --release --verbose
 
 test:
