@@ -1,12 +1,21 @@
-rrun
-====
-
 .. image:: https://travis-ci.org/buster/rrun.svg?branch=master
     :target: https://travis-ci.org/buster/rrun
 
-minimalistic command launcher in rust similar to gmrun
+rrun
+====
+
+rrun is a minimalistic command launcher in rust similar to gmrun.
+It started as a playground to learn Rust, but since i use it all day for months now, it's probably useful for others as well.
+It replaced gmrun and gnome-do on my laptop.
+rrun has few features, it can do bash completion and run commands and that's it.
+It will also append the commands being run to your bash history.
 
 .. image:: rrun.gif
+
+Installation
+""""""""""""
+
+Download a Debian package from https://github.com/buster/rrun/releases or compile yourself with "cargo build".
 
 Usage
 """""
