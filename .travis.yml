@@ -3,7 +3,7 @@ sudo: false
 addons:
   apt:
     packages:
-      - gtk+3.0
+      - libgtk-3-0
       - libgtk-3-dev
 rust:
 - nightly
