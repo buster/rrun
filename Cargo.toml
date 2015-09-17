@@ -7,20 +7,24 @@ keywords = ["gtk", "tool", "bash"]
 license = "GPL-3.0+"
 description = "minimalistic command launcher in rust similar to gmrun"
 
-[dependencies.gtk]
-git = "https://github.com/rust-gnome/gtk"
+#[dependencies.gtk]
+# git = "https://github.com/rust-gnome/gtk"
 
-[dependencies.gdk]
-git = "https://github.com/rust-gnome/gdk"
-default-features = false
+# [dependencies.gdk]
+# git = "https://github.com/rust-gnome/gdk"
+# default-features = false
 
 [dependencies]
 log = "*"
 env_logger = "*"
+glib = "^0"
+gdk = "^0"
+gtk = "^0"
+cairo-rs = "^0"
 
 [features]
 default = ["search_entry"]
-search_entry = ["gtk/gtk_3_10"]
+search_entry = []
 
 [[bin]]
 name = "rrun"

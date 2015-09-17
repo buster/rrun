@@ -5,10 +5,10 @@ extern crate env_logger;
 extern crate gtk;
 extern crate gdk;
 
+use gtk::traits::*;
 use std::rc::Rc;
 use std::cell::{Cell, RefCell};
 use gtk::signal::Inhibit;
-use gtk::traits::*;
 use gdk::enums::key;
 use gdk::enums::modifier_type;
 use bashautocompleter::BashAutoCompleter;
@@ -29,17 +29,17 @@ fn get_entry_field() -> gtk::Entry {
 
 #[allow(dead_code)]
 fn main() {
+    gtk::init().unwrap_or_else(|_| panic!("Failed to initialize GTK."));
+    println!("Major: {}, Minor: {}", gtk::get_major_version(), gtk::get_minor_version());
+    let window = gtk::Window::new(gtk::WindowType::Toplevel).unwrap();
     env_logger::init().unwrap();
-    gtk::init();
-    debug!("GTK VERSION: Major: {}, Minor: {}", gtk::get_major_version(), gtk::get_minor_version());
-    let window = gtk::Window::new(gtk::WindowType::TopLevel).unwrap();
     let entry = get_entry_field();
 
     window.set_title("rrun");
     window.set_window_position(gtk::WindowPosition::Center);
 
     let autocompleter = Rc::new(RefCell::new(BashAutoCompleter::new()));
-    let last_pressed_key: Rc<Cell<u32>> = Rc::new(Cell::new(0));
+    let last_pressed_key: Rc<Cell<i32>> = Rc::new(Cell::new(0));
 
     window.connect_delete_event(|_, _| {
         gtk::main_quit();
@@ -52,7 +52,7 @@ fn main() {
     window.show_all();
     window.connect_key_press_event(move |_, key| {
 
-        let keyval: u32 = key.keyval;
+        let keyval = key.keyval as i32;
         let keystate = (*key).state;
         debug!("key pressed: {}", keyval);
         match keyval {
@@ -93,7 +93,7 @@ fn main() {
             },
             _ => ()
         }
-        last_pressed_key.set((*key).keyval);
+        last_pressed_key.set((*key).keyval as i32);
         return Inhibit(false)
     } );
 

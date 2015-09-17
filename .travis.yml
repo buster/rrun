@@ -1,7 +1,8 @@
 language: rust
-env:
-  global:
-    - LD_LIBRARY_PATH=/usr/local/lib
+sudo: false
+rust:
+- nightly
+- stable
 before_install:
   - yes | sudo add-apt-repository ppa:ricotz/testing
   - sudo apt-get update
@@ -9,5 +10,5 @@ install:
   - sudo apt-get install gtk+3.0 libgtk-3-dev
 script:
   - rustc --version
-  - cargo test --no-default-features
-  - cargo build --no-default-features
+  - cargo test
+  - cargo build
