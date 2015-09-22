@@ -3,7 +3,8 @@ sudo: false
 addons:
   apt:
     sources:
-      - debian-sid
+      # - debian-sid
+      - lucid
     packages:
       # - libgtk-3-0
       - libgtk-3-dev
