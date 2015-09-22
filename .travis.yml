@@ -2,8 +2,8 @@ language: rust
 sudo: false
 addons:
   apt:
-    # sources:
-      # - debian-sid
+    sources:
+      - debian-sid
     packages:
       # - libgtk-3-0
       - libgtk-3-dev
