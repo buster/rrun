@@ -21,10 +21,10 @@ addons:
       # - libpango1.0-0
       # - libatk1.0-dev
       # - libgdk-pixbuf2.0-dev
-      - libgdk3.0-cil-dev
+      # - libgdk3.0-cil-dev
 rust:
 - nightly
-- stable
+# - stable
 # before_install:
 #   - yes | sudo add-apt-repository ppa:ricotz/testing
 #   - sudo apt-get update
