@@ -80,22 +80,20 @@ fn main() {
 
             }
             key::Tab => {
-                let new_completion = completions.lock()
-                                                .unwrap()
-                                                .next()
-                                                .map(|c| c.trim().to_string());
+                if last_pressed_key.get() != key::Tab {
+                    let text = &entry.get_text().unwrap();
+                    *completions.lock().unwrap() = autocompleter.complete(text);
+                }
+                let new_completion = completions.lock().unwrap().next();
 
                 if new_completion.is_some() {
-                    entry.set_text(&new_completion.clone().unwrap());
+                    entry.set_text(new_completion.unwrap().trim());
                     entry.set_position(-1);
                     last_pressed_key.set(key::Tab);
                     return Inhibit(true);
                 }
             }
-            _ => {
-                let text = &entry.get_text().unwrap();
-                *completions.lock().unwrap() = autocompleter.complete(text);
-            }
+            _ => (),
         }
         last_pressed_key.set((*key).keyval as i32);
         return Inhibit(false);
