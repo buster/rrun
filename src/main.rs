@@ -7,7 +7,8 @@ extern crate gdk;
 
 use gtk::traits::*;
 use std::rc::Rc;
-use std::cell::{Cell, RefCell};
+use std::cell::Cell;
+use std::sync::{Arc, Mutex};
 use gtk::signal::Inhibit;
 use gdk::enums::key;
 use gdk::enums::modifier_type;
@@ -38,7 +39,7 @@ fn main() {
     window.set_title("rrun");
     window.set_window_position(gtk::WindowPosition::Center);
 
-    let autocompleter = Rc::new(RefCell::new(BashAutoCompleter::new()));
+    let autocompleter = BashAutoCompleter::new();
     let last_pressed_key: Rc<Cell<i32>> = Rc::new(Cell::new(0));
 
     window.connect_delete_event(|_, _| {
@@ -50,8 +51,11 @@ fn main() {
     window.add(&entry);
     window.set_border_width(0);
     window.show_all();
+    let the_completions: Arc<Mutex<Box<Iterator<Item=String>>>> = Arc::new(Mutex::new(Box::new(vec![].into_iter())));
+    let the_completion: Arc<Mutex<Option<String>>> = Arc::new(Mutex::new(None));
     window.connect_key_press_event(move |_, key| {
-
+        let completions = the_completions.clone();
+        let completion = the_completion.clone();
         let keyval = key.keyval as i32;
         let keystate = (*key).state;
         debug!("key pressed: {}", keyval);
@@ -79,19 +83,21 @@ fn main() {
 
             },
             key::Tab => {
-                let completion = match last_pressed_key.get() {
-                    key::Tab => autocompleter.borrow_mut().complete_next(),
-                    _ => autocompleter.borrow_mut().complete_new(&entry.get_text().unwrap())
-                };
+                let new_completion = completions.lock().unwrap().next().map(|c| c.trim().to_string());
 
-                if completion.is_some() {
-                    entry.set_text(completion.unwrap().trim());
+                if new_completion.is_some() {
+                    entry.set_text(&new_completion.clone().unwrap());
+                    *completion.lock().unwrap() = new_completion;
                     entry.set_position(-1);
                     last_pressed_key.set(key::Tab);
                     return Inhibit(true);
                 }
             },
-            _ => ()
+            _ => {
+                let text = &entry.get_text().unwrap();
+                *completions.lock().unwrap() = autocompleter.complete(text);
+                *completion.lock().unwrap() = completions.lock().unwrap().next();
+            }
         }
         last_pressed_key.set((*key).keyval as i32);
         return Inhibit(false)
