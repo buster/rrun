@@ -39,6 +39,7 @@ impl AutoCompleter for BashAutoCompleter {
 fn test_bash_compgen() {
     let mut new_completion: Box<AutoCompleter> = BashAutoCompleter::new();
     assert_eq!(new_completion.complete_new("which"), Some("which".to_string()));
+    assert!(new_completion.complete_new("wh").unwrap().starts_with("wh"));
     assert!(new_completion.complete_next() != None);
     assert_eq!(new_completion.complete_new("Undefined_Command That does not exist"), None);
 }
