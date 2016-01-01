@@ -1,4 +1,3 @@
 pub trait AutoCompleter {
-    fn complete_next(&mut self) -> Option<String>;
-    fn complete_new(&mut self, cmd_string: &str) -> Option<String>;
+    fn complete(&self, cmd_string: &str) -> Box<Iterator<Item=String>>;
 }
