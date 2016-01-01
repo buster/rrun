@@ -51,7 +51,7 @@ fn main() {
     window.add(&entry);
     window.set_border_width(0);
     window.show_all();
-    let the_completions: Arc<Mutex<Box<Iterator<Item=String>>>> = Arc::new(Mutex::new(Box::new(vec![].into_iter())));
+    let the_completions: Arc<Mutex<Box<Iterator<Item = String>>>> = Arc::new(Mutex::new(Box::new(vec![].into_iter())));
     window.connect_key_press_event(move |_, key| {
         let completions = the_completions.clone();
         let keyval = key.keyval as i32;
@@ -73,15 +73,17 @@ fn main() {
                     }
 
 
-                }
-                else {
+                } else {
                     execution::execute(cmd, true);
                     gtk::main_quit();
                 }
 
-            },
+            }
             key::Tab => {
-                let new_completion = completions.lock().unwrap().next().map(|c| c.trim().to_string());
+                let new_completion = completions.lock()
+                                                .unwrap()
+                                                .next()
+                                                .map(|c| c.trim().to_string());
 
                 if new_completion.is_some() {
                     entry.set_text(&new_completion.clone().unwrap());
@@ -89,15 +91,15 @@ fn main() {
                     last_pressed_key.set(key::Tab);
                     return Inhibit(true);
                 }
-            },
+            }
             _ => {
                 let text = &entry.get_text().unwrap();
                 *completions.lock().unwrap() = autocompleter.complete(text);
             }
         }
         last_pressed_key.set((*key).keyval as i32);
-        return Inhibit(false)
-    } );
+        return Inhibit(false);
+    });
 
     gtk::main();
 }

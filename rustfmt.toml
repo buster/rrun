@@ -1,0 +1,4 @@
+max_width = 120
+ideal_width = 80
+tab_spaces = 4
+fn_call_width = 100

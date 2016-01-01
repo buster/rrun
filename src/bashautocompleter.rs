@@ -5,18 +5,17 @@ pub struct BashAutoCompleter;
 
 impl BashAutoCompleter {
     pub fn new() -> Box<AutoCompleter> {
-        return Box::new(BashAutoCompleter)
+        return Box::new(BashAutoCompleter);
     }
 }
 
 impl AutoCompleter for BashAutoCompleter {
-
-    fn complete(&self, cmd_string: &str) -> Box<Iterator<Item=String>>{
-        //returns a new completion based on the passed string
+    fn complete(&self, cmd_string: &str) -> Box<Iterator<Item = String>> {
+        // returns a new completion based on the passed string
         let out = execute(format!("compgen -A command {}", cmd_string), false);
         let mut completion_vec = match out {
             Some(completion_string) => completion_string.lines().map(|l| l.to_string()).collect::<Vec<_>>(),
-            None => vec![]
+            None => vec![],
         };
         completion_vec.reverse();
         Box::new(completion_vec.into_iter())
