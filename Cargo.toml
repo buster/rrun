@@ -7,13 +7,6 @@ keywords = ["gtk", "tool", "bash"]
 license = "GPL-3.0+"
 description = "minimalistic command launcher in rust similar to gmrun"
 
-#[dependencies.gtk]
-# git = "https://github.com/rust-gnome/gtk"
-
-# [dependencies.gdk]
-# git = "https://github.com/rust-gnome/gdk"
-# default-features = false
-
 [dependencies]
 log = "*"
 env_logger = "*"
