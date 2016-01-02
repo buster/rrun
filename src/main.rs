@@ -96,7 +96,7 @@ fn main() {
             _ => (),
         }
         last_pressed_key.set((*key).keyval as i32);
-        return Inhibit(false);
+        Inhibit(false)
     });
 
     gtk::main();
