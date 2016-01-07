@@ -48,9 +48,11 @@ fn get_entry_field() -> gtk::Entry {
 }
 
 fn get_config_file() -> Result<File, String> {
-    
     // Create a path to the desired file
-    let config_directory = env::home_dir().unwrap().join(Path::new(".config/rrun"));
+    let config_directory = match env::home_dir() {
+        Some(dir) => dir.join(Path::new(".config/rrun")),
+        None => panic!("Unable to get $HOME")
+    };
     if fs::create_dir_all(&config_directory).is_err() {
         panic!("Unable to create config directory {:?}", config_directory);
     };
@@ -60,7 +62,7 @@ fn get_config_file() -> Result<File, String> {
         Err(why) => {
             info!("couldn't open {}: {}", config_path.display(), Error::description(&why));
             println!("Creating initial config file in ~/.config/rrun/config.toml.");
-            let mut f = File::create(&config_path).unwrap();
+            let mut f = trys!(File::create(&config_path));
             trys!(f.write_all(include_str!("config.toml").as_bytes()));
             trys!(f.flush());
             drop(f);
