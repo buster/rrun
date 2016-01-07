@@ -166,12 +166,10 @@ fn main() {
             key::Return => {
                 debug!("keystate: {:?}", keystate);
                 debug!("Controlmask == {:?}", modifier_type::ControlMask);
-                let the_completion = current_completion.lock().unwrap().clone()
-                    .unwrap_or(Completion {
-                        tpe: "command".to_string(),
-                        text: entry.get_text().unwrap()
-                    });
+                let query = entry.get_text().unwrap();
+                let the_completion = get_completions(&query).next().unwrap();
                 let ref runner = runners_by_type.get(&the_completion.tpe).unwrap()[0];
+                debug!("Completing '{}' by {:?} {:?} with {:?}", query, the_completion.tpe, the_completion, runner);
                 let output = runner.run(&the_completion.text);
                 if keystate.intersects(modifier_type::ControlMask) {
                     debug!("ctrl pressed!");
@@ -186,8 +184,8 @@ fn main() {
             }
             key::Tab => {
                 if last_pressed_key.get() != key::Tab {
-                    let text = &entry.get_text().unwrap();
-                    let current_completions = get_completions(&text);
+                    let query = &entry.get_text().unwrap();
+                    let current_completions = get_completions(query);
                     *completions.lock().unwrap() = Box::new(current_completions);
                 }
                 let new_completion = completions.lock().unwrap().next();

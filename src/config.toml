@@ -1,5 +1,9 @@
 [[completion]]
 type="command"
+command="echo {}"
+
+[[completion]]
+type="command"
 command="compgen -A command {}"
 
 [[runner]]
