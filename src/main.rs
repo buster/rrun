@@ -41,7 +41,9 @@ fn get_entry_field() -> gtk::Entry {
 fn main() {
     // Create a path to the desired file
     let config_directory = env::home_dir().unwrap().join(Path::new(".config/rrun"));
-    fs::create_dir_all(&config_directory);
+    if fs::create_dir_all(&config_directory).is_err() {
+        panic!("Unable to create config directory {:?}", config_directory);
+    };
     let config_path = config_directory.join(Path::new("config.toml"));
     let config_path_display = config_path.display();
 
