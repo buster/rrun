@@ -50,7 +50,7 @@ fn main() {
     let mut file = match File::open(&config_path) {
         Err(why) => {
             info!("couldn't open {}: {}", config_path_display, Error::description(&why));
-            info!("Creating initial config file");
+            println!("Creating initial config file in ~/.config/rrun/config.toml.");
             let mut f = File::create(&config_path).unwrap();
             f.write_all(include_str!("config.toml").as_bytes()).unwrap();
             f.flush();
@@ -69,7 +69,7 @@ fn main() {
     }
 
     let value = toml::Parser::new(&toml).parse().unwrap();
-    println!("TOML is {:?}", value);
+    debug!("TOML is {:?}", value);
     let maybe_completions = value.get("completion").into_iter();
     let completions = maybe_completions.flat_map(|cs| cs.as_slice().unwrap().into_iter());
     let autocompleter_configs = completions.flat_map(|cs| cs.as_table());
@@ -79,7 +79,7 @@ fn main() {
     }).collect();
 
     gtk::init().unwrap_or_else(|_| panic!("Failed to initialize GTK."));
-    println!("Major: {}, Minor: {}", gtk::get_major_version(), gtk::get_minor_version());
+    debug!("Major: {}, Minor: {}", gtk::get_major_version(), gtk::get_minor_version());
     let last_pressed_key: Rc<Cell<i32>> = Rc::new(Cell::new(0));
 
     let window = gtk::Window::new(gtk::WindowType::Toplevel).unwrap();
