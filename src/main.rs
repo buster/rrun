@@ -49,11 +49,13 @@ fn main() {
 
     let mut file = match File::open(&config_path) {
         Err(why) => {
-            println!("couldn't open {}: {}", config_path_display, Error::description(&why));
-            println!("Creating initial config file");
+            info!("couldn't open {}: {}", config_path_display, Error::description(&why));
+            info!("Creating initial config file");
             let mut f = File::create(&config_path).unwrap();
             f.write_all(include_str!("config.toml").as_bytes()).unwrap();
-            panic!("Check the generated file at {} and try running again", config_path.display());
+            f.flush();
+            drop(f);
+            File::open(&config_path).unwrap()
         },
         Ok(file) => file,
     };
