@@ -137,6 +137,11 @@ fn main() {
 
     let runners_by_type = get_runners(&config);
     debug!("Runners by type: {:?}", runners_by_type);
+    let run_completion = move |completion: &Completion| {
+        let ref runner = runners_by_type.get(&completion.tpe).unwrap()[0];
+        debug!("Running {:?} {:?} with {:?}", completion.tpe, completion, runner);
+        runner.run(&completion.id)
+    };
     let last_pressed_key: Rc<Cell<i32>> = Rc::new(Cell::new(0));
 
     let window = gtk::Window::new(gtk::WindowType::Toplevel).unwrap();
@@ -170,9 +175,7 @@ fn main() {
                 debug!("Controlmask == {:?}", modifier_type::ControlMask);
                 let query = entry.get_text().unwrap();
                 let the_completion = get_completions(&query).next().unwrap();
-                let ref runner = runners_by_type.get(&the_completion.tpe).unwrap()[0];
-                debug!("Completing '{}' by {:?} {:?} with {:?}", query, the_completion.tpe, the_completion, runner);
-                let output = runner.run(&the_completion.text);
+                let output = run_completion(&the_completion);
                 if keystate.intersects(modifier_type::ControlMask) {
                     debug!("ctrl pressed!");
                     if output.len() > 0 {

@@ -6,5 +6,6 @@ pub trait AutoCompleter {
 #[derive(Debug,Clone,PartialEq)]
 pub struct Completion {
     pub tpe: String,
+    pub id: String,
     pub text: String
 }
