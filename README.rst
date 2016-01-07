@@ -42,3 +42,8 @@ The relevant parts of ~/.i3/config::
   bindsym XF86HomePage exec rrun
   for_window [title="rrun"] floating enable
   exec --no-startup-id xmodmap ~/.Xmodmap
+  
+Contributors
+""""""""""""
+
+@nightscape
