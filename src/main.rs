@@ -6,6 +6,7 @@ extern crate gtk;
 extern crate gdk;
 extern crate toml;
 extern crate itertools;
+extern crate regex;
 
 use gtk::traits::*;
 use std::rc::Rc;
@@ -95,10 +96,11 @@ fn get_completers(config: &toml::Table) -> Vec<Box<autocomplete::AutoCompleter>>
     let maybe_completions = config.get("completion").into_iter();
     let completions = maybe_completions.flat_map(|cs| cs.as_slice().unwrap().into_iter());
     let autocompleter_configs = completions.flat_map(|cs| cs.as_table());
-     autocompleter_configs.map(|cfg| {
-        let command = cfg.get("command").and_then(|c| c.as_str()).map(|c| c.to_string()).unwrap();
+    autocompleter_configs.map(|cfg| {
+        let command = cfg.get("command").and_then(|c| c.as_str()).map(|c| c.to_string()).unwrap_or("".to_string());
         let tpe = cfg.get("type").and_then(|c| c.as_str()).map(|c| c.to_string()).unwrap();
-        ExternalAutoCompleter::new(tpe, command)
+        let trigger = cfg.get("trigger").and_then(|c| c.as_str()).map(|c| c.to_string()).unwrap_or("(.*)".to_string());
+        ExternalAutoCompleter::new(tpe, command, trigger)
     }).collect()
 }
 

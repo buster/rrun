@@ -9,6 +9,7 @@ dependencies = [
  "gtk 0.0.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools 0.4.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "log 0.3.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "regex 0.1.44 (registry+https://github.com/rust-lang/crates.io-index)",
  "toml 0.1.25 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
