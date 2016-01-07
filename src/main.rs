@@ -72,13 +72,14 @@ fn main() {
     println!("TOML is {:?}", value);
     let maybe_completions = value.get("completion").into_iter();
     let completions = maybe_completions.flat_map(|cs| cs.as_slice().unwrap().into_iter());
-    gtk::init().unwrap_or_else(|_| panic!("Failed to initialize GTK."));
-    println!("Major: {}, Minor: {}", gtk::get_major_version(), gtk::get_minor_version());
     let autocompleter_configs = completions.flat_map(|cs| cs.as_table());
     let autocompleters:Vec<Box<AutoCompleter>> = autocompleter_configs.map(|cfg| {
         let command = cfg.get("command").and_then(|c| c.as_str()).map(|c| c.to_string()).unwrap();
         ExternalAutoCompleter::new(command)
     }).collect();
+
+    gtk::init().unwrap_or_else(|_| panic!("Failed to initialize GTK."));
+    println!("Major: {}, Minor: {}", gtk::get_major_version(), gtk::get_minor_version());
     let last_pressed_key: Rc<Cell<i32>> = Rc::new(Cell::new(0));
 
     let window = gtk::Window::new(gtk::WindowType::Toplevel).unwrap();
