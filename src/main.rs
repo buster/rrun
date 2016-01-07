@@ -27,6 +27,16 @@ mod autocomplete;
 mod externalautocompleter;
 mod execution;
 
+#[macro_export]
+macro_rules! trys {($e: expr) => {match $e {
+    Ok (ok) => ok,
+    Err (err) => {
+        return Err (format! ("{}:{}] {}", file!(), line!(), err));
+        }
+    }
+}
+}
+
 #[cfg(feature="search_entry")]
 fn get_entry_field() -> gtk::SearchEntry {
     gtk::SearchEntry::new().unwrap()
@@ -37,33 +47,38 @@ fn get_entry_field() -> gtk::Entry {
     gtk::Entry::new().unwrap()
 }
 
-#[allow(dead_code)]
-fn main() {
+fn get_config_file() -> Result<File, String> {
+    
     // Create a path to the desired file
     let config_directory = env::home_dir().unwrap().join(Path::new(".config/rrun"));
     if fs::create_dir_all(&config_directory).is_err() {
         panic!("Unable to create config directory {:?}", config_directory);
     };
     let config_path = config_directory.join(Path::new("config.toml"));
-    let config_path_display = config_path.display();
 
-    let mut file = match File::open(&config_path) {
+    match File::open(&config_path) {
         Err(why) => {
-            info!("couldn't open {}: {}", config_path_display, Error::description(&why));
+            info!("couldn't open {}: {}", config_path.display(), Error::description(&why));
             println!("Creating initial config file in ~/.config/rrun/config.toml.");
             let mut f = File::create(&config_path).unwrap();
-            f.write_all(include_str!("config.toml").as_bytes()).unwrap();
-            f.flush();
+            trys!(f.write_all(include_str!("config.toml").as_bytes()));
+            trys!(f.flush());
             drop(f);
-            File::open(&config_path).unwrap()
+            Ok(trys!(File::open(&config_path)))
         },
-        Ok(file) => file,
-    };
+        Ok(file) => Ok(file),
+    }
+}
 
+
+
+#[allow(dead_code)]
+fn main() {
+    let mut file = get_config_file().unwrap();
     // Read the file contents into a string, returns `io::Result<usize>`
     let mut toml = String::new();
     match file.read_to_string(&mut toml) {
-        Err(why) => panic!("couldn't read {}: {}", config_path_display,
+        Err(why) => panic!("couldn't read Configfile ~/.config/rrun/config.toml: {}",
                                                    Error::description(&why)),
         Ok(_) => (),
     }
