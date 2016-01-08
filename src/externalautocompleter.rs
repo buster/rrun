@@ -70,4 +70,5 @@ fn test_external_completion() {
     // Test that we didn't break something with mutation
     let mut second_completion = completer.complete("bar");
     assert_eq!(second_completion.next().map(|c| c.text), Some("the bar".to_owned()));
-    assert!(second_completion.next() == None);}
+    assert!(second_completion.next() == None);
+}
