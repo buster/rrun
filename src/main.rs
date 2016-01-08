@@ -16,18 +16,16 @@ use std::fs::File;
 use std::error::Error;
 use std::path::Path;
 use std::env;
-use std::collections::HashMap;
 use itertools::Itertools;
 use std::cell::Cell;
 use std::sync::{Arc, Mutex};
 use gtk::signal::Inhibit;
 use gdk::enums::key;
 use gdk::enums::modifier_type;
-use externalautocompleter::ExternalAutoCompleter;
-use autocomplete::AutoCompleter;
 use autocomplete::Completion;
-use runner::Runner;
-use externalrunner::ExternalRunner;
+use engine::DefaultEngine;
+use engine::Engine;
+mod engine;
 mod autocomplete;
 mod externalautocompleter;
 mod runner;
@@ -92,56 +90,15 @@ fn read_config(config_file: &mut File) -> toml::Table {
     config
 }
 
-fn get_completers(config: &toml::Table) -> Vec<Box<autocomplete::AutoCompleter>> {
-    let maybe_completions = config.get("completion").into_iter();
-    let completions = maybe_completions.flat_map(|cs| cs.as_slice().unwrap().into_iter());
-    let autocompleter_configs = completions.flat_map(|cs| cs.as_table());
-    autocompleter_configs.map(|cfg| {
-        let command = cfg.get("command").and_then(|c| c.as_str()).map(|c| c.to_string()).unwrap_or("".to_string());
-        let tpe = cfg.get("type").and_then(|c| c.as_str()).map(|c| c.to_string()).unwrap();
-        let trigger = cfg.get("trigger").and_then(|c| c.as_str()).map(|c| c.to_string()).unwrap_or("(.*)".to_string());
-        ExternalAutoCompleter::new(tpe, command, trigger)
-    }).collect()
-}
-
-fn get_runners(config: &toml::Table) -> HashMap<String, Vec<Box<externalrunner::ExternalRunner>>> {
-    let runner_configs = config.get("runner").into_iter()
-                              .flat_map(|r| r.as_slice().unwrap().into_iter())
-                              .flat_map(|r| r.as_table());
-    let runners: Vec<Box<ExternalRunner>> = runner_configs.map(|cfg| {
-        let command = cfg.get("command").and_then(|c| c.as_str()).map(|c| c.to_string()).unwrap();
-        let tpe = cfg.get("type").and_then(|c| c.as_str()).map(|c| c.to_string()).unwrap();
-        ExternalRunner::new(tpe, command)
-    }).collect();
-
-    let mut runners_by_type = HashMap::with_capacity(runners.len());
-    for (key, group) in runners.into_iter().group_by(|r| r.get_type()) {
-        runners_by_type.insert(key, group.into_iter().collect_vec());
-    }
-    runners_by_type
-}
-
 #[allow(dead_code)]
 fn main() {
     let mut file = get_config_file().unwrap();
     let config = read_config(&mut file);
-    let autocompleters = get_completers(&config);
+    let engine = DefaultEngine::new(&config);
 
     gtk::init().unwrap_or_else(|_| panic!("Failed to initialize GTK."));
     debug!("Major: {}, Minor: {}", gtk::get_major_version(), gtk::get_minor_version());
-    let get_completions = move |query: &str| {
-        autocompleters.iter().map(|completer| {
-            completer.complete(query).collect_vec().into_iter()
-        }).fold1(|c1, c2| c1.chain(c2).collect_vec().into_iter()).unwrap()
-    };
 
-    let runners_by_type = get_runners(&config);
-    debug!("Runners by type: {:?}", runners_by_type);
-    let run_completion = move |completion: &Completion| {
-        let ref runner = runners_by_type.get(&completion.tpe).unwrap()[0];
-        debug!("Running {:?} {:?} with {:?}", completion.tpe, completion, runner);
-        runner.run(&completion.id)
-    };
     let last_pressed_key: Rc<Cell<i32>> = Rc::new(Cell::new(0));
 
     let window = gtk::Window::new(gtk::WindowType::Toplevel).unwrap();
@@ -175,8 +132,8 @@ fn main() {
                 debug!("Controlmask == {:?}", modifier_type::ControlMask);
                 let query = entry.get_text().unwrap();
                 let comp = *current_completion.lock().unwrap().clone();
-                let the_completion = comp.unwrap_or(get_completions(&query).next().unwrap());
-                let output = run_completion(&the_completion);
+                let the_completion = comp.unwrap_or(engine.get_completions(&query).next().unwrap().to_owned());
+                let output = engine.run_completion(&the_completion).unwrap();
                 if keystate.intersects(modifier_type::ControlMask) {
                     debug!("ctrl pressed!");
                     if output.len() > 0 {
@@ -191,8 +148,8 @@ fn main() {
             key::Tab => {
                 if last_pressed_key.get() != key::Tab {
                     let query = &entry.get_text().unwrap();
-                    let current_completions = get_completions(query);
-                    *completions.lock().unwrap() = Box::new(current_completions);
+                    let current_completions = engine.get_completions(query);
+                    *completions.lock().unwrap() = current_completions;
                 }
                 let new_completion = completions.lock().unwrap().next();
 
