@@ -35,7 +35,14 @@ impl AutoCompleter for ExternalAutoCompleter {
             match out {
                 Some(completion_string) => completion_string.lines().map(|l| l.to_owned())
                     .map(|c| {
-                        Completion { tpe: self.get_type(), text: c.clone(), id: c.clone() }
+                        let cells = c.split("\t").collect::<Vec<_>>();
+                        if cells.len() == 1 {
+                            Completion { tpe: self.get_type(), text: cells[0].to_string(), id: cells[0].to_string() }
+                        } else if cells.len() == 2 {
+                            Completion { tpe: self.get_type(), text: cells[0].to_string(), id: cells[1].to_string() }
+                        } else {
+                            panic!("Unexpected completion format {:?}", cells)
+                        }
                     }).collect::<Vec<_>>(),
                 None => vec![]
             }
@@ -51,9 +58,9 @@ impl AutoCompleter for ExternalAutoCompleter {
 
 #[test]
 fn test_external_completion() {
-    let completer = ExternalAutoCompleter::new("command".to_string(), "echo the {}".to_string(), "(.*)".to_string());
+    let completer = ExternalAutoCompleter::new("command".to_string(), "echo -e 'the {}\tyes, that {}'".to_string(), "(.*)".to_string());
     let mut new_completion = completer.complete("foo");
-    assert_eq!(new_completion.next(), Some(Completion {tpe: "command".to_owned(), text: "the foo".to_owned(), id: "the foo".to_owned()}));
+    assert_eq!(new_completion.next(), Some(Completion {tpe: "command".to_owned(), text: "the foo".to_owned(), id: "yes, that foo".to_owned()}));
     assert!(new_completion.next() == None);
     // Test that we didn't break something with mutation
     let mut second_completion = completer.complete("bar");
