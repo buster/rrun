@@ -174,7 +174,8 @@ fn main() {
                 debug!("keystate: {:?}", keystate);
                 debug!("Controlmask == {:?}", modifier_type::ControlMask);
                 let query = entry.get_text().unwrap();
-                let the_completion = get_completions(&query).next().unwrap();
+                let comp = *current_completion.lock().unwrap().clone();
+                let the_completion = comp.unwrap_or(get_completions(&query).next().unwrap());
                 let output = run_completion(&the_completion);
                 if keystate.intersects(modifier_type::ControlMask) {
                     debug!("ctrl pressed!");
