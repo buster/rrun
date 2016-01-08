@@ -13,6 +13,7 @@ pub struct ExternalAutoCompleter {
 
 impl ExternalAutoCompleter {
     pub fn new(tpe: String, command: String, trigger: String) -> Box<AutoCompleter> {
+        debug!("Instantianting ExternalAutoCompleter(tpe={}, command={}, trigger={})", tpe, command, trigger);
         Box::new(ExternalAutoCompleter { tpe: tpe, command: command, trigger: trigger })
     }
 }
@@ -37,9 +38,13 @@ impl AutoCompleter for ExternalAutoCompleter {
                     .map(|c| {
                         let cells = c.split("\t").collect::<Vec<_>>();
                         if cells.len() == 1 {
-                            Completion { tpe: self.get_type(), text: cells[0].to_string(), id: cells[0].to_string() }
+                            let c = Completion { tpe: self.tpe.to_owned(), text: cells[0].to_string(), id: cells[0].to_string() };
+                            debug!("Generated completion with only text: {:?}", c);
+                            c
                         } else if cells.len() == 2 {
-                            Completion { tpe: self.get_type(), text: cells[0].to_string(), id: cells[1].to_string() }
+                            let c = Completion { tpe: self.tpe.to_owned(), text: cells[0].to_string(), id: cells[1].to_string() };
+                            debug!("Generated completion with text and id: {:?}", c);
+                            c
                         } else {
                             panic!("Unexpected completion format {:?}", cells)
                         }
