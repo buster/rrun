@@ -3,6 +3,10 @@ type="ruby_code"
 trigger="rb (.*)"
 
 [[completion]]
+type="numeric_expression"
+trigger="([0-9]+.*)"
+
+[[completion]]
 type="command"
 command="echo {}"
 
@@ -16,4 +20,8 @@ command="bash -i -c '(history -s {}; history -a) && {}'"
 
 [[runner]]
 type="ruby_code"
+command="ruby -e 'puts {}'"
+
+[[runner]]
+type="numeric_expression"
 command="ruby -e 'puts {}'"
