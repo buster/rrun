@@ -1,5 +1,6 @@
-rrun (0.0.7~8.gbp9376e8) UNRELEASED; urgency=medium
+rrun (0.0.7) unstable; urgency=medium
 
+  [ Sebastian Schulze ]
   ** SNAPSHOT build @9376e818708971859ed6f0e50566cfcf8223aeda **
 
   * UNRELEASED
@@ -7,7 +8,107 @@ rrun (0.0.7~8.gbp9376e8) UNRELEASED; urgency=medium
   * remove unused rustup.sh from Makefile
   * remove space in Makefile
 
- -- Sebastian Schulze <me@bstr.eu>  Mon, 11 May 2015 10:55:40 +0200
+  [ buster ]
+  * Update README.rst
+  * Update README.rst
+
+  [ Tshepang Lekhonkhobe ]
+  * README: typo
+
+  [ Sebastian Schulze ]
+  * begin work on ac_manager
+  * update for new rust versions and dependencies.
+    Let's see what travis says nowadays to gtk 3.16
+  * test sudo stuff removal on travis
+  * revert to non container travis
+  * test new travis containers
+  * try libgtk...
+  * add deps
+  * new deps
+  * use debian unstable?
+  * typo in dep
+  * add deps
+  * and another try
+  * hi there
+  * yep.
+  * masdsadwqe
+  * asödjk
+  * sadöljasödljk
+  * asd
+  * revert to old travis setup
+  * try#2
+
+  [ Martin Mauch ]
+  * Update dependencies to make build work
+  * Replace class mutation with Iterator
+
+  [ Sebastian Schulze ]
+  * add test for 'wh' which should find something starting with 'wh'
+  * remove unused variable
+  * fix bashgen usage
+    bashgen returns the best match on the last line, so the vector needs to
+    be reversed
+  * reformatting sourcecode with rustfmt
+    and adding rustfmt.toml
+
+  [ Martin Mauch ]
+  * Only call completion when TAB is pressed
+
+  [ Sebastian Schulze ]
+  * remove unused dependencies
+  * fix some clippy complaints
+
+  [ Martin Mauch ]
+  * Completions can be configured via .toml file
+    located in ~/.config/rrun/config.toml
+
+  [ Sebastian Schulze ]
+  * panic when not able to create config directory
+  * don't panic on initial start
+  * move GTK
+  * silence debug output and give feedback about config file
+  * read config file in get_config_file()
+  * move creation of completers to function
+  * panic when $HOME is not found
+
+  [ buster ]
+  * created contributors section
+  * Update README.rst
+
+  [ Martin Mauch ]
+  * Runners can be configured via .toml file
+    located in ~/.config/rrun/config.toml
+  * Issuing a command without hitting TAB performs completion
+  * Completion can specify a trigger that determines its applicability
+  * Move running of completions into a closure and run by id
+  * External completers can specify an id after a TAB
+  * More debug info
+  * Fix running of completions to use currently selected completion
+  * Move completion and running logic into new Engine trait
+  * Add completion and runner for numeric expressions to config
+  * fixup! Completions can be configured via .toml file
+  * Add completion for Google search and Chrome runner
+  * Sort and uniq bash completions
+
+  [ Sebastian Schulze ]
+  * removed "echo" completion
+    if this is configured, completion only works on the second TAB as expected
+  * I actually have chromium, and not google-chrome
+    plus i am using dwb (which is x-www-browser) and others might use
+    firefox..
+    I think on linux "x-www-browser" is the standard way to do this
+  * replaced ruby with python for general purpose scripts
+    i think all major distributions come with python in the base
+    installation, but not ruby. Users might not have ruby,
+    so it looks like using python (or even perl, ugh..) would be better
+  * add error message
+  * output completion in debug
+  * update Cargo.lock
+  * debug output if cmd runs in background
+  * run commands in background unless CTRL is pressed
+  * fix url completion for google search
+
+ -- Sebastian Schulze <me@bstr.eu>  Sat, 09 Jan 2016 11:13:14 +0100
 
 rrun (0.0.6) unstable; urgency=medium
 
