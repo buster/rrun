@@ -2,8 +2,8 @@ use std::process::Command;
 use std::process::Output;
 
 pub fn execute(cmd: String, forget_stdout: bool) -> Option<String> {
-    debug!("executing: {}", cmd);
     if forget_stdout {
+        debug!("executing in background: {}", cmd);
         Command::new("bash")
             .arg("-c")
             .arg(&cmd)
@@ -11,6 +11,7 @@ pub fn execute(cmd: String, forget_stdout: bool) -> Option<String> {
             .unwrap_or_else(|_| panic!("unable to spawn!"));
         return None;
     } else {
+        debug!("executing and getting stdout: {}", cmd);
         let Output {status, stdout, .. } = Command::new("bash")
                                                .arg("-c")
                                                .arg(&cmd)
