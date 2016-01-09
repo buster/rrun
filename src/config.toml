@@ -33,4 +33,4 @@ command="ruby -e 'puts {}'"
 
 [[runner]]
 type="url"
-command="google-chrome --new-window {}"
+command="x-www-browser {}"
