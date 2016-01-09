@@ -7,6 +7,11 @@ type="numeric_expression"
 trigger="([0-9]+.*)"
 
 [[completion]]
+type="url"
+trigger="g (.*)"
+command="ruby -r uri -e '@q = \"{}\"; @q_quoted = URI.escape(@q); puts \"Google for #@q\thttps://www.google.com/search?q=#@q_quoted\"'"
+
+[[completion]]
 type="command"
 command="echo {}"
 
@@ -25,3 +30,7 @@ command="ruby -e 'puts {}'"
 [[runner]]
 type="numeric_expression"
 command="ruby -e 'puts {}'"
+
+[[runner]]
+type="url"
+command="google-chrome --new-window {}"
