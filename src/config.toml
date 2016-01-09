@@ -17,7 +17,7 @@ command="echo {}"
 
 [[completion]]
 type="command"
-command="compgen -A command {}"
+command="compgen -A command {} | sort | uniq"
 
 [[runner]]
 type="command"
