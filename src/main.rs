@@ -152,6 +152,7 @@ fn main() {
                     *completions.lock().unwrap() = current_completions;
                 }
                 let new_completion = completions.lock().unwrap().next();
+                debug!("new_completion: {:?}", new_completion);
 
                 if new_completion.is_some() {
                     *current_completion.lock().unwrap() = Box::new(new_completion.clone());
