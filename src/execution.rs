@@ -15,7 +15,7 @@ pub fn execute(cmd: String, forget_stdout: bool) -> Option<String> {
                                                .arg("-c")
                                                .arg(&cmd)
                                                .output()
-                                               .unwrap();
+                                               .unwrap_or_else(|_| panic!("Unable to get output of {}!", cmd));
         let out = String::from_utf8_lossy(&stdout).into_owned();
         debug!("out: {}", out);
         if status.success() {
