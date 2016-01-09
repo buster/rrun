@@ -42,7 +42,52 @@ The relevant parts of ~/.i3/config::
   bindsym XF86HomePage exec rrun
   for_window [title="rrun"] floating enable
   exec --no-startup-id xmodmap ~/.Xmodmap
-  
+
+How to build the package
+""""""""""""""""""""""""
+
+Creation of a cowbuilder image
+''''''''''''''''''''''''''''''
+
+The build process needs pbuilder/cowbuilder installed in debian (apt-get install cowbuilder pbuilder).
+A Debian testing buid image can be created with::
+
+  sudo cowbuilder --create --distribution testing
+
+Eatmydata Installation
+''''''''''''''''''''''
+
+Install eatmydata (on build machine and in the image) to speeding up dpkg (from https://wiki.debian.org/cowbuilder ):
+
+On the build machine::
+
+  apt-get install eatmydata
+
+In the build image::
+
+  sudo cowbuilder --login --save
+  apt-get install eatmydata
+
+For eatmydata (>=82-2), add this /etc/pbuilderrc (on the build machine)::
+
+  if [ -z "$LD_PRELOAD" ]; then
+    LD_PRELOAD=libeatmydata.so
+  else
+    LD_PRELOAD="$LD_PRELOAD":libeatmydata.so
+  fi
+
+  export LD_PRELOAD
+
+Package Build Process
+'''''''''''''''''''''
+
+The debian package can be built with the following commands:
+
+- `make deb` just creates the .deb file without touching the changelog
+- `make snapshot` creates a snapshot .deb without incrementing the version number (but updating the changelog)
+- `make release` creates a new release and bumps the minor version number
+
+
 Contributors
 """"""""""""
 

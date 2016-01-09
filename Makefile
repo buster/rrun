@@ -41,6 +41,5 @@ updatecowbuilder:
 # sudo cowbuilder --login --save-after-login
 # apt-get update
 # apt-get dist-upgrade
-# apt-get install libgtk-3-dev git sudo curl debhelper ca-certificates sed tar bash
-# curl -sf -L https://static.rust-lang.org/rustup.sh | sh -s -- --prefix=/usr
+# apt-get install rustc cargo libgtk-3-dev git sudo curl debhelper ca-certificates sed tar bash
 # exit
