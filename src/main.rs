@@ -19,6 +19,7 @@ use std::env;
 use itertools::Itertools;
 use std::cell::Cell;
 use std::sync::{Arc, Mutex};
+use gtk::widgets;
 use gtk::signal::Inhibit;
 use gdk::enums::key;
 use gdk::enums::modifier_type;
@@ -99,25 +100,27 @@ fn main() {
 
     gtk::init().unwrap_or_else(|_| panic!("Failed to initialize GTK."));
     debug!("Major: {}, Minor: {}", gtk::get_major_version(), gtk::get_minor_version());
+    let glade_src = include_str!("rrun.glade");
+    let builder = widgets::Builder::new_from_string(glade_src).unwrap();
+    let (window, entry) = unsafe {
+        let window: gtk::Window = builder.get_object("rrun").unwrap();
+        let container: gtk::widgets::Box = builder.get_object("container").unwrap();
+        let entry = get_entry_field();
+        container.add(&entry);
+        window.connect_delete_event(|_, _| {
+           gtk::main_quit();
+           Inhibit(false)
+        });
+        window.set_border_width(0);
+        window.set_decorated(false);
+        window.show_all();
+        (window, entry)
+    };
 
     let last_pressed_key: Rc<Cell<i32>> = Rc::new(Cell::new(0));
 
-    let window = gtk::Window::new(gtk::WindowType::Toplevel).unwrap_or_else(|| panic!("Unable to create GTK Window!"));
     env_logger::init().unwrap_or_else(|x| panic!("Error initializing logger: {}", x));
-    let entry = get_entry_field();
 
-    window.set_title("rrun");
-    window.set_window_position(gtk::WindowPosition::Center);
-
-    window.connect_delete_event(|_, _| {
-        gtk::main_quit();
-        Inhibit(true)
-    });
-
-    window.set_decorated(false);
-    window.add(&entry);
-    window.set_border_width(0);
-    window.show_all();
     let completion_iterator: Arc<Mutex<Box<Iterator<Item = Completion>>>> =
         Arc::new(Mutex::new(Box::new(vec![].into_iter())));
     let current_completion: Arc<Mutex<Box<Option<Completion>>>> = Arc::new(Mutex::new(Box::new(None)));
