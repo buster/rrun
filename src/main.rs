@@ -25,12 +25,7 @@ use gdk::enums::modifier_type;
 use autocomplete::Completion;
 use engine::DefaultEngine;
 use engine::Engine;
-mod engine;
-mod autocomplete;
-mod externalautocompleter;
-mod runner;
-mod externalrunner;
-mod execution;
+
 
 #[macro_export]
 macro_rules! trys {($e: expr) => {match $e {
@@ -41,6 +36,13 @@ macro_rules! trys {($e: expr) => {match $e {
     }
 }
 }
+mod engine;
+mod autocomplete;
+mod externalautocompleter;
+mod runner;
+mod externalrunner;
+mod execution;
+
 
 #[cfg(feature="search_entry")]
 fn get_entry_field() -> gtk::SearchEntry {
@@ -116,11 +118,10 @@ fn main() {
     window.add(&entry);
     window.set_border_width(0);
     window.show_all();
-    let the_completions: Arc<Mutex<Box<Iterator<Item = Completion>>>> =
+    let completion_iterator: Arc<Mutex<Box<Iterator<Item = Completion>>>> =
         Arc::new(Mutex::new(Box::new(vec![].into_iter())));
     let current_completion: Arc<Mutex<Box<Option<Completion>>>> = Arc::new(Mutex::new(Box::new(None)));
     window.connect_key_press_event(move |_, key| {
-        let completions = the_completions.clone();
         let keyval = key.keyval as i32;
         let keystate = (*key).state;
         debug!("key pressed: {}", keyval);
@@ -131,24 +132,24 @@ fn main() {
                 debug!("Controlmask == {:?}", modifier_type::ControlMask);
                 let query = entry.get_text().unwrap_or_else(|| panic!("Unable to get string from Entry widget!"));
                 let comp = *current_completion.lock()
-                                                  .unwrap_or_else(|x| {
-                                                      panic!("Unable to lock current_completion {:?}", x)
-                                                  })
-                                                  .clone();
+                                              .unwrap_or_else(|x| panic!("Unable to lock current_completion {:?}", x))
+                                              .clone();
                 let the_completion = match comp {
                     Some(completion) => completion,
                     None => engine.get_completions(&query).next().unwrap().to_owned(),
                 };
 
                 if keystate.intersects(modifier_type::ControlMask) {
-                    let output = engine.run_completion(&the_completion, false).unwrap();
+                    let output = engine.run_completion(&the_completion, false)
+                                       .unwrap_or_else(|x| panic!("Error while executing the command {:?}", x));
                     debug!("ctrl pressed!");
                     if output.len() > 0 {
                         entry.set_text(output.trim());
                         entry.set_position(-1);
                     }
                 } else {
-                    let _ = engine.run_completion(&the_completion, true);
+                    let _ = engine.run_completion(&the_completion, true)
+                                  .unwrap_or_else(|x| panic!("Error while executing {:?} in the background!", x));
                     gtk::main_quit();
                 }
 
@@ -157,9 +158,9 @@ fn main() {
                 if last_pressed_key.get() != key::Tab {
                     let query = &entry.get_text().unwrap();
                     let current_completions = engine.get_completions(query);
-                    *completions.lock().unwrap() = current_completions;
+                    *completion_iterator.lock().unwrap() = current_completions;
                 }
-                let new_completion = completions.lock().unwrap().next();
+                let new_completion = completion_iterator.lock().unwrap().next();
                 debug!("new_completion: {:?}", new_completion);
 
                 if new_completion.is_some() {

@@ -80,8 +80,12 @@ impl Engine for DefaultEngine {
     }
 
     fn run_completion(&self, completion: &Completion, in_background: bool) -> Result<String, String> {
-        let ref runner = self.runners.get(&completion.tpe).unwrap()[0];
+        let ref runner = match self.runners.get(&completion.tpe) {
+            Some(values) if values.len() >= 1 => &values[0],
+            Some(_) => return Err("Runner returned zero sized completions".to_owned()),
+            None => return Err("Runner returned None".to_owned()),
+        };
         debug!("Running {:?} {:?} with {:?}", completion.tpe, completion, runner);
-        Ok(runner.run(&completion.id, in_background))
+        runner.run(&completion.id, in_background)
     }
 }
