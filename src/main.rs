@@ -118,10 +118,9 @@ fn main() {
     window.show_all();
     let the_completions: Arc<Mutex<Box<Iterator<Item = Completion>>>> =
         Arc::new(Mutex::new(Box::new(vec![].into_iter())));
-    let the_current_completion: Arc<Mutex<Box<Option<Completion>>>> = Arc::new(Mutex::new(Box::new(None)));
+    let current_completion: Arc<Mutex<Box<Option<Completion>>>> = Arc::new(Mutex::new(Box::new(None)));
     window.connect_key_press_event(move |_, key| {
         let completions = the_completions.clone();
-        let current_completion = the_current_completion.clone();
         let keyval = key.keyval as i32;
         let keystate = (*key).state;
         debug!("key pressed: {}", keyval);
@@ -130,10 +129,17 @@ fn main() {
             key::Return => {
                 debug!("keystate: {:?}", keystate);
                 debug!("Controlmask == {:?}", modifier_type::ControlMask);
-                let query = entry.get_text().unwrap();
-                let comp = *current_completion.lock().unwrap().clone();
-                let the_completion = comp.unwrap_or(engine.get_completions(&query).next().unwrap().to_owned());
                 let query = entry.get_text().unwrap_or_else(|| panic!("Unable to get string from Entry widget!"));
+                let comp = *current_completion.lock()
+                                                  .unwrap_or_else(|x| {
+                                                      panic!("Unable to lock current_completion {:?}", x)
+                                                  })
+                                                  .clone();
+                let the_completion = match comp {
+                    Some(completion) => completion,
+                    None => engine.get_completions(&query).next().unwrap().to_owned(),
+                };
+
                 if keystate.intersects(modifier_type::ControlMask) {
                     let output = engine.run_completion(&the_completion, false).unwrap();
                     debug!("ctrl pressed!");
