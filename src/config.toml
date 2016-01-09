@@ -9,7 +9,7 @@ trigger="([0-9]+.*)"
 [[completion]]
 type="url"
 trigger="g (.*)"
-command="python -c 'import urllib; print(\"Google for https://www.google.com/search?q={0}\".format(urllib.quote(\"{}\")))'"
+command="python -c 'import urllib; print(\"https://www.google.com/search?q={0}\".format(urllib.quote(\"{}\")))'"
 
 # [[completion]]
 # type="command"
