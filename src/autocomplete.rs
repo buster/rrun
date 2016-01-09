@@ -7,5 +7,5 @@ pub trait AutoCompleter {
 pub struct Completion {
     pub tpe: String,
     pub id: String,
-    pub text: String
+    pub text: String,
 }

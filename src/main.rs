@@ -56,7 +56,7 @@ fn get_config_file() -> Result<File, String> {
     // Create a path to the desired file
     let config_directory = match env::home_dir() {
         Some(dir) => dir.join(Path::new(".config/rrun")),
-        None => panic!("Unable to get $HOME")
+        None => panic!("Unable to get $HOME"),
     };
     if fs::create_dir_all(&config_directory).is_err() {
         panic!("Unable to create config directory {:?}", config_directory);
@@ -72,7 +72,7 @@ fn get_config_file() -> Result<File, String> {
             trys!(f.flush());
             drop(f);
             Ok(trys!(File::open(&config_path)))
-        },
+        }
         Ok(file) => Ok(file),
     }
 }
@@ -80,8 +80,7 @@ fn get_config_file() -> Result<File, String> {
 fn read_config(config_file: &mut File) -> toml::Table {
     let mut toml = String::new();
     match config_file.read_to_string(&mut toml) {
-        Err(why) => panic!("couldn't read Configfile ~/.config/rrun/config.toml: {}",
-                                                   Error::description(&why)),
+        Err(why) => panic!("couldn't read Configfile ~/.config/rrun/config.toml: {}", Error::description(&why)),
         Ok(_) => (),
     }
 
@@ -117,7 +116,8 @@ fn main() {
     window.add(&entry);
     window.set_border_width(0);
     window.show_all();
-    let the_completions: Arc<Mutex<Box<Iterator<Item = Completion>>>> = Arc::new(Mutex::new(Box::new(vec![].into_iter())));
+    let the_completions: Arc<Mutex<Box<Iterator<Item = Completion>>>> =
+        Arc::new(Mutex::new(Box::new(vec![].into_iter())));
     let the_current_completion: Arc<Mutex<Box<Option<Completion>>>> = Arc::new(Mutex::new(Box::new(None)));
     window.connect_key_press_event(move |_, key| {
         let completions = the_completions.clone();
