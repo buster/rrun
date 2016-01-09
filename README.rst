@@ -15,10 +15,19 @@ It will also append the commands being run to your bash history.
 
 .. image:: rrun.gif
 
+Dependencies
+""""""""""""
+
+GTK3.10+
+
 Installation
 """"""""""""
 
-Download a Debian package from https://github.com/buster/rrun/releases or compile yourself with "cargo build".
+You have several options:
+
+#. download a Debian package from https://github.com/buster/rrun/releases
+#. install from crates.io with "cargo install rrun"
+#. compile yourself with "cargo build"
 
 Usage
 """""
