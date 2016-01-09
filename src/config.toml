@@ -1,0 +1,36 @@
+[[completion]]
+type="ruby_code"
+trigger="rb (.*)"
+
+[[completion]]
+type="numeric_expression"
+trigger="([0-9]+.*)"
+
+[[completion]]
+type="url"
+trigger="g (.*)"
+command="python -c 'import urllib; print(\"https://www.google.com/search?q={0}\".format(urllib.quote(\"{}\")))'"
+
+# [[completion]]
+# type="command"
+# command="echo {}"
+
+[[completion]]
+type="command"
+command="compgen -A command {} | sort | uniq"
+
+[[runner]]
+type="command"
+command="bash -i -c '(history -s {}; history -a) && {}'"
+
+[[runner]]
+type="ruby_code"
+command="ruby -e 'puts {}'"
+
+[[runner]]
+type="numeric_expression"
+command="python -c 'print({})'"
+
+[[runner]]
+type="url"
+command="x-www-browser {}"

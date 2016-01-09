@@ -1,21 +1,9 @@
 use std::process::Command;
 use std::process::Output;
 
-pub fn execute(cmd: String, forget_stdout: bool) -> Option<String> {
-    debug!("executing: {}", cmd);
-    if !cmd.starts_with("compgen") && !cmd.starts_with("history ") {
-        let mut hist_cmd = "(history -s ".to_owned();
-        hist_cmd.push_str(&cmd);
-        hist_cmd.push_str("; history -a)");
-        Command::new("bash")
-            .arg("-i")
-            .arg("-c")
-            .arg(&hist_cmd)
-            .output()
-            .unwrap_or_else(|_| panic!("unable to append to history!"));
-    }
-
-    if forget_stdout {
+pub fn execute(cmd: String, in_background: bool) -> Option<String> {
+    if in_background {
+        debug!("executing in background: {}", cmd);
         Command::new("bash")
             .arg("-c")
             .arg(&cmd)
@@ -23,11 +11,12 @@ pub fn execute(cmd: String, forget_stdout: bool) -> Option<String> {
             .unwrap_or_else(|_| panic!("unable to spawn!"));
         return None;
     } else {
+        debug!("executing and getting stdout: {}", cmd);
         let Output {status, stdout, .. } = Command::new("bash")
                                                .arg("-c")
                                                .arg(&cmd)
                                                .output()
-                                               .unwrap();
+                                               .unwrap_or_else(|_| panic!("Unable to get output of {}!", cmd));
         let out = String::from_utf8_lossy(&stdout).into_owned();
         debug!("out: {}", out);
         if status.success() {
