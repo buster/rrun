@@ -1,9 +1,5 @@
 rrun (0.1.0) unstable; urgency=medium
 
-  [ buster ]
-  * Update README.rst
-  * Update README.rst
-
   [ Tshepang Lekhonkhobe ]
   * README: typo
 
@@ -11,24 +7,7 @@ rrun (0.1.0) unstable; urgency=medium
   * begin work on ac_manager
   * update for new rust versions and dependencies.
     Let's see what travis says nowadays to gtk 3.16
-  * test sudo stuff removal on travis
-  * revert to non container travis
-  * test new travis containers
-  * try libgtk...
-  * add deps
-  * new deps
-  * use debian unstable?
-  * typo in dep
-  * add deps
-  * and another try
-  * hi there
-  * yep.
-  * masdsadwqe
-  * asödjk
-  * sadöljasödljk
-  * asd
   * revert to old travis setup
-  * try#2
 
   [ Martin Mauch ]
   * Update dependencies to make build work
@@ -101,7 +80,7 @@ rrun (0.1.0) unstable; urgency=medium
   * fix url completion for google search
   * Update changelog for 0.0.7 release
 
- -- Sebastian Schulze <me@bstr.eu>  Sat, 09 Jan 2016 11:13:44 +0100
+ -- Sebastian Schulze <me@bstr.eu>  Sat, 09 Jan 2016 11:14:04 +0100
 
 rrun (0.0.7) unstable; urgency=medium
 
