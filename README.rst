@@ -1,5 +1,8 @@
 .. image:: https://travis-ci.org/buster/rrun.svg?branch=master
     :target: https://travis-ci.org/buster/rrun
+.. image:: https://img.shields.io/crates/v/rrun.svg
+.. image:: https://cdn.rawgit.com/syl20bnr/spacemacs/442d025779da2f62fc86c2082703697714db6514/assets/spacemacs-badge.svg
+    :target: http://github.com/syl20bnr/spacemacs
 
 rrun
 ====
