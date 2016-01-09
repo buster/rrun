@@ -11,9 +11,9 @@ type="url"
 trigger="g (.*)"
 command="ruby -r uri -e '@q = \"{}\"; @q_quoted = URI.escape(@q); puts \"Google for #@q\thttps://www.google.com/search?q=#@q_quoted\"'"
 
-[[completion]]
-type="command"
-command="echo {}"
+# [[completion]]
+# type="command"
+# command="echo {}"
 
 [[completion]]
 type="command"
