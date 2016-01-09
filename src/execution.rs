@@ -1,8 +1,8 @@
 use std::process::Command;
 use std::process::Output;
 
-pub fn execute(cmd: String, forget_stdout: bool) -> Option<String> {
-    if forget_stdout {
+pub fn execute(cmd: String, in_background: bool) -> Option<String> {
+    if in_background {
         debug!("executing in background: {}", cmd);
         Command::new("bash")
             .arg("-c")

@@ -9,7 +9,7 @@ use toml;
 
 pub trait Engine {
     fn get_completions(&self, query: &str) -> Box<Iterator<Item=Completion>>;
-    fn run_completion(&self, completion: &Completion) -> Result<String, String>;
+    fn run_completion(&self, completion: &Completion, in_background: bool) -> Result<String, String>;
 }
 
 pub struct DefaultEngine {
@@ -62,9 +62,9 @@ impl Engine for DefaultEngine {
         Box::new(completions)
     }
 
-    fn run_completion(&self, completion: &Completion) -> Result<String, String> {
+    fn run_completion(&self, completion: &Completion, in_background: bool) -> Result<String, String> {
         let ref runner = self.runners.get(&completion.tpe).unwrap()[0];
         debug!("Running {:?} {:?} with {:?}", completion.tpe, completion, runner);
-        Ok(runner.run(&completion.id))
+        Ok(runner.run(&completion.id, in_background))
     }
 }

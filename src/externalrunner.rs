@@ -16,9 +16,9 @@ impl ExternalRunner {
 
 impl Runner for ExternalRunner {
 
-    fn run(&self, to_run: &str) -> String {
+    fn run(&self, to_run: &str, in_background: bool) -> String {
         //returns a new completion based on the passed string
-        let out = execute(self.command.replace("{}", to_run), false);
+        let out = execute(self.command.replace("{}", to_run), in_background);
         match out {
             Some(out_string) => out_string.to_owned(),
             None => "".to_string()

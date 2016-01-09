@@ -133,14 +133,15 @@ fn main() {
                 let query = entry.get_text().unwrap();
                 let comp = *current_completion.lock().unwrap().clone();
                 let the_completion = comp.unwrap_or(engine.get_completions(&query).next().unwrap().to_owned());
-                let output = engine.run_completion(&the_completion).unwrap();
                 if keystate.intersects(modifier_type::ControlMask) {
+                    let output = engine.run_completion(&the_completion, false).unwrap();
                     debug!("ctrl pressed!");
                     if output.len() > 0 {
                         entry.set_text(output.trim());
                         entry.set_position(-1);
                     }
                 } else {
+                    let _ = engine.run_completion(&the_completion, true);
                     gtk::main_quit();
                 }
 
