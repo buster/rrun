@@ -103,7 +103,7 @@ fn main() {
     let last_pressed_key: Rc<Cell<i32>> = Rc::new(Cell::new(0));
 
     let window = gtk::Window::new(gtk::WindowType::Toplevel).unwrap_or_else(|| panic!("Unable to create GTK Window!"));
-    env_logger::init().unwrap();
+    env_logger::init().unwrap_or_else(|x| panic!("Error initializing logger: {}", x));
     let entry = get_entry_field();
 
     window.set_title("rrun");
@@ -156,7 +156,7 @@ fn main() {
             }
             key::Tab => {
                 if last_pressed_key.get() != key::Tab {
-                    let query = &entry.get_text().unwrap();
+                    let query = &entry.get_text().unwrap_or_else(|| panic!("Unable to get string from Entry widget!"));
                     let current_completions = engine.get_completions(query);
                     *completion_iterator.lock().unwrap() = current_completions;
                 }
