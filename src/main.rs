@@ -44,12 +44,12 @@ macro_rules! trys {($e: expr) => {match $e {
 
 #[cfg(feature="search_entry")]
 fn get_entry_field() -> gtk::SearchEntry {
-    gtk::SearchEntry::new().unwrap()
+    gtk::SearchEntry::new().unwrap_or_else(|| panic!("Unable to instantiate GTK::SearchEntry!"))
 }
 
 #[cfg(not(feature="search_entry"))]
 fn get_entry_field() -> gtk::Entry {
-    gtk::Entry::new().unwrap()
+    gtk::Entry::new().unwrap_or_else(|| panic!("Unable to instantiate GTK::Entry!"))
 }
 
 fn get_config_file() -> Result<File, String> {
@@ -84,14 +84,14 @@ fn read_config(config_file: &mut File) -> toml::Table {
         Ok(_) => (),
     }
 
-    let config = toml::Parser::new(&toml).parse().unwrap();
+    let config = toml::Parser::new(&toml).parse().unwrap_or_else(|| panic!("Unable to parse config file TOML!"));
     debug!("config.toml contains the following configuration\n{:?}", config);
     config
 }
 
 #[allow(dead_code)]
 fn main() {
-    let mut file = get_config_file().unwrap();
+    let mut file = get_config_file().unwrap_or_else(|x| panic!("Unable to read configuration! {}", x));
     let config = read_config(&mut file);
     let engine = DefaultEngine::new(&config);
 
@@ -100,7 +100,7 @@ fn main() {
 
     let last_pressed_key: Rc<Cell<i32>> = Rc::new(Cell::new(0));
 
-    let window = gtk::Window::new(gtk::WindowType::Toplevel).unwrap();
+    let window = gtk::Window::new(gtk::WindowType::Toplevel).unwrap_or_else(|| panic!("Unable to create GTK Window!"));
     env_logger::init().unwrap();
     let entry = get_entry_field();
 
@@ -133,6 +133,7 @@ fn main() {
                 let query = entry.get_text().unwrap();
                 let comp = *current_completion.lock().unwrap().clone();
                 let the_completion = comp.unwrap_or(engine.get_completions(&query).next().unwrap().to_owned());
+                let query = entry.get_text().unwrap_or_else(|| panic!("Unable to get string from Entry widget!"));
                 if keystate.intersects(modifier_type::ControlMask) {
                     let output = engine.run_completion(&the_completion, false).unwrap();
                     debug!("ctrl pressed!");
