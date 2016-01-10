@@ -4,6 +4,7 @@ extern crate log;
 extern crate env_logger;
 extern crate gtk;
 extern crate gdk;
+extern crate glib;
 extern crate toml;
 extern crate itertools;
 extern crate regex;
@@ -17,11 +18,12 @@ use std::error::Error;
 use std::path::Path;
 use std::env;
 use itertools::Itertools;
-use std::cell::Cell;
-use std::sync::{Arc, Mutex};
+use std::cell::{Cell, RefCell};
+use std::str::FromStr;
 use gtk::widgets;
 use gtk::signal::Inhibit;
 use gdk::enums::key;
+use gdk::keyval_to_unicode;
 use gdk::enums::modifier_type;
 use autocomplete::Completion;
 use engine::DefaultEngine;
@@ -53,6 +55,15 @@ fn get_entry_field() -> gtk::SearchEntry {
 #[cfg(not(feature="search_entry"))]
 fn get_entry_field() -> gtk::Entry {
     gtk::Entry::new().unwrap_or_else(|| panic!("Unable to instantiate GTK::Entry!"))
+}
+
+fn append_text_column(tree: &gtk::TreeView) {
+    let column = gtk::TreeViewColumn::new().unwrap();
+    let cell = gtk::CellRendererText::new().unwrap();
+
+    column.pack_start(&cell, true);
+    column.add_attribute(&cell, "text", 0);
+    tree.append_column(&column);
 }
 
 fn get_config_file() -> Result<File, String> {
@@ -102,11 +113,13 @@ fn main() {
     debug!("Major: {}, Minor: {}", gtk::get_major_version(), gtk::get_minor_version());
     let glade_src = include_str!("rrun.glade");
     let builder = widgets::Builder::new_from_string(glade_src).unwrap();
-    let (window, entry) = unsafe {
+    let (window, entry, completion_list) = unsafe {
         let window: gtk::Window = builder.get_object("rrun").unwrap();
         let container: gtk::widgets::Box = builder.get_object("container").unwrap();
+        let completion_list: gtk::widgets::TreeView = builder.get_object("completion_view").unwrap();
         let entry = get_entry_field();
         container.add(&entry);
+        container.reorder_child(&entry, 0);
         window.connect_delete_event(|_, _| {
            gtk::main_quit();
            Inhibit(false)
@@ -114,16 +127,34 @@ fn main() {
         window.set_border_width(0);
         window.set_decorated(false);
         window.show_all();
-        (window, entry)
+        (window, entry, completion_list)
     };
+    let column_types = [glib::Type::String];
+    let completion_store = gtk::ListStore::new(&column_types).unwrap();
+    let completion_model = completion_store.get_model().unwrap();
+
+    completion_list.set_model(&completion_model);
+    completion_list.set_headers_visible(false);
+
+    append_text_column(&completion_list);
 
     let last_pressed_key: Rc<Cell<i32>> = Rc::new(Cell::new(0));
 
     env_logger::init().unwrap_or_else(|x| panic!("Error initializing logger: {}", x));
 
-    let completion_iterator: Arc<Mutex<Box<Iterator<Item = Completion>>>> =
-        Arc::new(Mutex::new(Box::new(vec![].into_iter())));
-    let current_completion: Arc<Mutex<Box<Option<Completion>>>> = Arc::new(Mutex::new(Box::new(None)));
+    let current_completions: Rc<RefCell<Vec<Completion>>> = Rc::new(RefCell::new(vec![]));
+    let selected_completion: Rc<RefCell<Option<Completion>>> = Rc::new(RefCell::new(None));
+    let current_and_selected_completions = (current_completions.clone(), selected_completion.clone());
+    completion_list.get_selection().unwrap().connect_changed(move |tree_selection| {
+        if let Some((completion_model, iter)) = tree_selection.get_selected() {
+            if let Some(path) = completion_model.get_path(&iter) {
+                let selected_number = usize::from_str(path.to_string().unwrap().trim()).unwrap();
+                let (ref current_completions, ref selected_completion) = current_and_selected_completions;
+                *selected_completion.borrow_mut() = Some(current_completions.borrow()[selected_number].clone());
+            }
+        }
+    });
+
     window.connect_key_press_event(move |_, key| {
         let keyval = key.keyval as i32;
         let keystate = (*key).state;
@@ -133,13 +164,16 @@ fn main() {
             key::Return => {
                 debug!("keystate: {:?}", keystate);
                 debug!("Controlmask == {:?}", modifier_type::ControlMask);
-                let query = entry.get_text().unwrap_or_else(|| panic!("Unable to get string from Entry widget!"));
-                let comp = *current_completion.lock()
-                                              .unwrap_or_else(|x| panic!("Unable to lock current_completion {:?}", x))
-                                              .clone();
-                let the_completion = match comp {
-                    Some(completion) => completion,
-                    None => engine.get_completions(&query).next().unwrap().to_owned(),
+                let ref compls_vec = *current_completions;
+                let compls = compls_vec.borrow();
+
+                let the_completion = if let Some(completion) = selected_completion.borrow().clone() {
+                    completion
+                } else if compls.len() > 0 {
+                    compls[0].clone()
+                } else {
+                    let query = entry.get_text().unwrap_or_else(|| panic!("Unable to get string from Entry widget!"));
+                    engine.get_completions(&query).next().unwrap().to_owned()
                 };
 
                 if keystate.intersects(modifier_type::ControlMask) {
@@ -157,24 +191,20 @@ fn main() {
                 }
 
             }
-            key::Tab => {
-                if last_pressed_key.get() != key::Tab {
-                    let query = &entry.get_text().unwrap_or_else(|| panic!("Unable to get string from Entry widget!"));
-                    let current_completions = engine.get_completions(query);
-                    *completion_iterator.lock().unwrap() = current_completions;
+            _ => {
+                let mut query = entry.get_text().unwrap_or_else(|| panic!("Unable to get string from Entry widget!")).clone();
+                if let Some(current_char) = keyval_to_unicode(key.keyval) {
+                    query.push(current_char);
+                    let completions = engine.get_completions(query.trim()).collect_vec();
+                    completion_store.clear();
+                    //debug!("Found {:?} completions", completions.len());
+                    for (i, cmpl) in completions.iter().enumerate().take(9) {
+                        let iter = completion_store.append();
+                        completion_store.set_string(&iter, 0, format!("{}. {}", i + 1, cmpl.text).trim());
+                    }
+                    *current_completions.borrow_mut() = completions;
                 }
-                let new_completion = completion_iterator.lock().unwrap().next();
-                debug!("new_completion: {:?}", new_completion);
-
-                if new_completion.is_some() {
-                    *current_completion.lock().unwrap() = Box::new(new_completion.clone());
-                    entry.set_text(new_completion.unwrap().text.trim());
-                    entry.set_position(-1);
-                    last_pressed_key.set(key::Tab);
-                    return Inhibit(true);
-                }
-            }
-            _ => (),
+            },
         }
         last_pressed_key.set((*key).keyval as i32);
         Inhibit(false)
