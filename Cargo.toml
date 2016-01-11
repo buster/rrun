@@ -25,9 +25,5 @@ toml = "^0"
 itertools = "^0"
 regex = "^0"
 
-[features]
-default = ["search_entry"]
-search_entry = []
-
 [[bin]]
 name = "rrun"

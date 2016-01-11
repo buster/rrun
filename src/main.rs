@@ -47,16 +47,6 @@ mod externalrunner;
 mod execution;
 
 
-#[cfg(feature="search_entry")]
-fn get_entry_field() -> gtk::SearchEntry {
-    gtk::SearchEntry::new().unwrap_or_else(|| panic!("Unable to instantiate GTK::SearchEntry!"))
-}
-
-#[cfg(not(feature="search_entry"))]
-fn get_entry_field() -> gtk::Entry {
-    gtk::Entry::new().unwrap_or_else(|| panic!("Unable to instantiate GTK::Entry!"))
-}
-
 fn append_text_column(tree: &gtk::TreeView) {
     let column = gtk::TreeViewColumn::new().unwrap();
     let cell = gtk::CellRendererText::new().unwrap();
@@ -115,11 +105,8 @@ fn main() {
     let builder = widgets::Builder::new_from_string(glade_src).unwrap();
     let (window, entry, completion_list) = unsafe {
         let window: gtk::Window = builder.get_object("rrun").unwrap();
-        let container: gtk::widgets::Box = builder.get_object("container").unwrap();
         let completion_list: gtk::widgets::TreeView = builder.get_object("completion_view").unwrap();
-        let entry = get_entry_field();
-        container.add(&entry);
-        container.reorder_child(&entry, 0);
+        let entry: gtk::widgets::SearchEntry = builder.get_object("search_entry").unwrap();
         window.connect_delete_event(|_, _| {
            gtk::main_quit();
            Inhibit(false)
