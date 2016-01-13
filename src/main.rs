@@ -15,7 +15,7 @@ use std::io::prelude::*;
 use std::fs;
 use std::fs::File;
 use std::error::Error;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::env;
 use itertools::Itertools;
 use std::cell::{Cell, RefCell};
@@ -55,8 +55,7 @@ fn append_text_column(tree: &gtk::TreeView) {
     column.add_attribute(&cell, "text", 0);
     tree.append_column(&column);
 }
-
-fn get_config_file() -> Result<File, String> {
+fn get_config_dir() -> PathBuf {
     // Create a path to the desired file
     let config_directory = match env::home_dir() {
         Some(dir) => dir.join(Path::new(".config/rrun")),
@@ -65,12 +64,13 @@ fn get_config_file() -> Result<File, String> {
     if fs::create_dir_all(&config_directory).is_err() {
         panic!("Unable to create config directory {:?}", config_directory);
     };
-    let config_path = config_directory.join(Path::new("config.toml"));
-
+    config_directory
+}
+fn get_config_file(config_path: &Path) -> Result<File, String> {
     match File::open(&config_path) {
         Err(why) => {
             info!("couldn't open {}: {}", config_path.display(), Error::description(&why));
-            println!("Creating initial config file in ~/.config/rrun/config.toml.");
+            println!("Creating initial config file in {:?}.", config_path);
             let mut f = trys!(File::create(&config_path));
             trys!(f.write_all(include_str!("config.toml").as_bytes()));
             trys!(f.flush());
@@ -95,7 +95,9 @@ fn read_config(config_file: &mut File) -> toml::Table {
 
 #[allow(dead_code)]
 fn main() {
-    let mut file = get_config_file().unwrap_or_else(|x| panic!("Unable to read configuration! {}", x));
+    let config_directory = get_config_dir();
+    let config_path = config_directory.join(Path::new("config.toml"));
+    let mut file = get_config_file(&config_path).unwrap_or_else(|x| panic!("Unable to read configuration! {}", x));
     let config = read_config(&mut file);
     let engine = DefaultEngine::new(&config);
 
