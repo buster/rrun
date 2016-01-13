@@ -163,7 +163,7 @@ fn main() {
         }
     });
 
-    window.connect_key_press_event(move |_, key| {
+    window.connect_key_release_event(move |_, key| {
         let keyval = key.keyval as i32;
         let keystate = (*key).state;
         debug!("key pressed: {}", keyval);
@@ -200,9 +200,9 @@ fn main() {
 
             }
             _ => {
-                let mut query = entry.get_text().unwrap_or_else(|| panic!("Unable to get string from Entry widget!")).clone();
-                if let Some(current_char) = keyval_to_unicode(key.keyval) {
-                    query.push(current_char);
+                let is_text_modifying = keyval_to_unicode(key.keyval).is_some() || keyval == key::BackSpace || keyval == key::Delete;
+                if is_text_modifying {
+                    let query = entry.get_text().unwrap_or_else(|| panic!("Unable to get string from Entry widget!")).clone();
                     let completions = engine.get_completions(query.trim()).collect_vec();
                     completion_store.clear();
                     //debug!("Found {:?} completions", completions.len());
