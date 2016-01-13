@@ -147,6 +147,7 @@ fn main() {
     append_text_column(&completion_list);
 
     let last_pressed_key: Rc<Cell<i32>> = Rc::new(Cell::new(0));
+    let current_completion_index: Rc<Cell<i32>> = Rc::new(Cell::new(0));
 
     env_logger::init().unwrap_or_else(|x| panic!("Error initializing logger: {}", x));
 
@@ -198,7 +199,22 @@ fn main() {
                     gtk::main_quit();
                 }
 
-            }
+            },
+            key::Tab => {
+                if last_pressed_key.get() == key::Tab {
+                    current_completion_index.set(current_completion_index.get() + 1);
+                    if let Some(ref c) = current_completions.borrow().get(current_completion_index.get() as usize) {
+                        entry.set_text(&c.id);
+                    }
+                }
+                else {
+                    //if last pressed key wasn't tab, we fill the entry with the most likely completion
+                    if let Some(ref c) = current_completions.borrow().get(0) {
+                        entry.set_text(&c.id);
+                        current_completion_index.set(0);
+                    }
+                }
+            },
             _ => {
                 let is_text_modifying = keyval_to_unicode(key.keyval).is_some() || keyval == key::BackSpace || keyval == key::Delete;
                 if is_text_modifying {
