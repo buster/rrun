@@ -66,16 +66,17 @@ fn get_config_dir() -> PathBuf {
     };
     config_directory
 }
-fn get_config_file(config_path: &Path) -> Result<File, String> {
-    match File::open(&config_path) {
+
+fn get_or_create(file_path: &Path, initial_content: &str) -> Result<File, String> {
+    match File::open(&file_path) {
         Err(why) => {
-            info!("couldn't open {}: {}", config_path.display(), Error::description(&why));
-            println!("Creating initial config file in {:?}.", config_path);
-            let mut f = trys!(File::create(&config_path));
-            trys!(f.write_all(include_str!("config.toml").as_bytes()));
+            info!("couldn't open {}: {}", file_path.display(), Error::description(&why));
+            println!("Initializing {:?} with default content. Edit it to your liking :D", file_path);
+            let mut f = trys!(File::create(&file_path));
+            trys!(f.write_all(initial_content.as_bytes()));
             trys!(f.flush());
             drop(f);
-            Ok(trys!(File::open(&config_path)))
+            Ok(trys!(File::open(&file_path)))
         }
         Ok(file) => Ok(file),
     }
@@ -93,18 +94,28 @@ fn read_config(config_file: &mut File) -> toml::Table {
     config
 }
 
+fn create_builder_from_file(mut file: &File) -> widgets::Builder {
+    let mut content = String::new();
+    match file.read_to_string(&mut content) {
+        Err(why) => panic!("couldn't read file {:?}: {}", file, Error::description(&why)),
+        Ok(_) => (),
+    }
+    widgets::Builder::new_from_string(&content).unwrap()
+}
+
 #[allow(dead_code)]
 fn main() {
     let config_directory = get_config_dir();
     let config_path = config_directory.join(Path::new("config.toml"));
-    let mut file = get_config_file(&config_path).unwrap_or_else(|x| panic!("Unable to read configuration! {}", x));
+    let mut file = get_or_create(&config_path, include_str!("config.toml")).unwrap_or_else(|x| panic!("Unable to read configuration! {}", x));
     let config = read_config(&mut file);
     let engine = DefaultEngine::new(&config);
 
     gtk::init().unwrap_or_else(|_| panic!("Failed to initialize GTK."));
     debug!("Major: {}, Minor: {}", gtk::get_major_version(), gtk::get_minor_version());
-    let glade_src = include_str!("rrun.glade");
-    let builder = widgets::Builder::new_from_string(glade_src).unwrap();
+    let ui_path = config_directory.join(Path::new("rrun.glade"));
+    let ui_file = get_or_create(&ui_path, include_str!("rrun.glade")).unwrap_or_else(|x| panic!("Unable to read configuration! {}", x));
+    let builder = create_builder_from_file(&ui_file);
     let (window, entry, completion_list) = unsafe {
         let window: gtk::Window = builder.get_object("rrun").unwrap();
         let css_path = config_directory.join(Path::new("style.css"));
