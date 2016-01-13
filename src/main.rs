@@ -107,6 +107,14 @@ fn main() {
     let builder = widgets::Builder::new_from_string(glade_src).unwrap();
     let (window, entry, completion_list) = unsafe {
         let window: gtk::Window = builder.get_object("rrun").unwrap();
+        let css_path = config_directory.join(Path::new("style.css"));
+        let css_result_message = css_path.to_str().map(|p|
+            widgets::CssProvider::load_from_path(p).map(|cp| {
+                widgets::StyleContext::add_provider_for_screen(&window.get_screen(), &cp, 1);
+                format!("Applied CSS stylesheet found in {:?}", p)
+            }).unwrap_or_else(|e| format!("Could not load CSS stylesheet in {:?}: {}", p, e))
+        ).unwrap_or(format!("No CSS stylesheet found in {:?}", css_path));
+        debug!("{}", css_result_message);
         let completion_list: gtk::widgets::TreeView = builder.get_object("completion_view").unwrap();
         let entry: gtk::widgets::SearchEntry = builder.get_object("search_entry").unwrap();
         window.connect_delete_event(|_, _| {
