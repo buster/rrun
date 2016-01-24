@@ -226,7 +226,7 @@ fn main() {
                     let completions = engine.get_completions(query.trim()).collect_vec();
                     completion_store.clear();
                     //debug!("Found {:?} completions", completions.len());
-                    for (i, cmpl) in completions.iter().enumerate().take(9) {
+                    for (i, cmpl) in completions.iter().enumerate().take(20) {
                         let iter = completion_store.append();
                         completion_store.set_string(&iter, 0, format!("{}. {}", i + 1, cmpl.text).trim());
                     }
