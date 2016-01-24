@@ -205,6 +205,10 @@ fn main() {
                     current_completion_index.set(current_completion_index.get() + 1);
                     if let Some(ref c) = current_completions.borrow().get(current_completion_index.get() as usize) {
                         entry.set_text(&c.id);
+                        let tree_selection = completion_list.get_selection().unwrap();
+                        let mut selection_array = [current_completion_index.get()];
+                        let select_path = widgets::TreePath::new_from_indicesv(&mut selection_array).unwrap();
+                        tree_selection.select_path(&select_path);
                     }
                 }
                 else {
@@ -227,6 +231,9 @@ fn main() {
                         completion_store.set_string(&iter, 0, format!("{}. {}", i + 1, cmpl.text).trim());
                     }
                     *current_completions.borrow_mut() = completions;
+                    let tree_selection = completion_list.get_selection().unwrap();
+                    let select_path = widgets::TreePath::new_first().unwrap();
+                    tree_selection.select_path(&select_path);
                 }
             },
         }
