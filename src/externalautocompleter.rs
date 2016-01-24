@@ -33,8 +33,10 @@ impl AutoCompleter for ExternalAutoCompleter {
             let query = trigger_match[0].at(1).unwrap_or(query);
             let out;
             if self.command.len() > 0 {
-                out = execute(self.command.replace("{}", query), false)
-                          .unwrap_or_else(|x| panic!("Error while executing query {}: {}", query, x))
+                out = match execute(self.command.replace("{}", query), false) {
+                    Ok(x) => x,
+                    Err(x) => {debug!("Error executing query {}", x); "".to_owned() }
+                }
             } else {
                 out = query.to_string()
             };
