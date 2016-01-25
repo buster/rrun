@@ -164,7 +164,7 @@ fn main() {
         }
     });
 
-    window.connect_key_press_event(move |_, key| {
+    window.connect_key_release_event(move |_, key| {
         let keyval = key.keyval as i32;
         let keystate = (*key).state;
         debug!("key pressed: {}", keyval);
