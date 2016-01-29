@@ -55,8 +55,8 @@ impl AutoCompleter for ExternalAutoCompleter {
                    } else if cells.len() == 2 {
                        let c = Completion {
                            tpe: self.tpe.to_owned(),
-                           text: cells[0].to_string(),
-                           id: cells[1].to_string(),
+                           text: cells[1].to_string(),
+                           id: cells[0].to_string(),
                        };
                        debug!("Generated completion with text and id: {:?}", c);
                        c
@@ -84,12 +84,12 @@ fn test_external_completion() {
     assert_eq!(new_completion.next(),
                Some(Completion {
                    tpe: "command".to_owned(),
-                   text: "the foo".to_owned(),
-                   id: "yes, that foo".to_owned(),
+                   text: "yes, that foo".to_owned(),
+                   id: "the foo".to_owned(),
                }));
     assert!(new_completion.next() == None);
     // Test that we didn't break something with mutation
     let mut second_completion = completer.complete("bar");
-    assert_eq!(second_completion.next().map(|c| c.text), Some("the bar".to_owned()));
+    assert_eq!(second_completion.next().map(|c| c.text), Some("yes, that bar".to_owned()));
     assert!(second_completion.next() == None);
 }
