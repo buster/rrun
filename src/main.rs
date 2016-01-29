@@ -8,6 +8,7 @@ extern crate glib;
 extern crate toml;
 extern crate itertools;
 extern crate regex;
+#[macro_use] extern crate clap;
 
 use gtk::traits::*;
 use std::rc::Rc;
@@ -28,7 +29,6 @@ use gdk::enums::modifier_type;
 use autocomplete::Completion;
 use engine::DefaultEngine;
 use engine::Engine;
-
 
 #[macro_export]
 macro_rules! trys {($e: expr) => {match $e {
@@ -105,12 +105,37 @@ fn create_builder_from_file(mut file: &File) -> widgets::Builder {
 
 #[allow(dead_code)]
 fn main() {
+    const VERSION: Option<&'static str> = option_env!("CARGO_PKG_VERSION");
+    let matches = clap_app!(rrun =>
+        (version: VERSION.unwrap_or("unknown"))
+        (about: "Extensible Quick-Launcher")
+        (@subcommand completions =>
+            (about: "List completions matching the given query")
+            (@arg type: "The type of the completion in config.toml (e.g. url, command, ...)")
+            (@arg query: "The query for which to list completions")
+        )
+    ).get_matches();
+
     let config_directory = get_config_dir();
     let config_path = config_directory.join(Path::new("config.toml"));
     let mut file = get_or_create(&config_path, include_str!("config.toml")).unwrap_or_else(|x| panic!("Unable to read configuration! {}", x));
     let config = read_config(&mut file);
     let engine = DefaultEngine::new(&config);
 
+    if let Some(ref matches) = matches.subcommand_matches("completions") {
+        if let (Some(tpe), Some(query)) = (matches.value_of("type"), matches.value_of("query")) {
+            let completions = engine.get_completions(&query).filter(|c| c.tpe == tpe);
+            let completion_tsv = completions.map(|c| format!("{}\t{}", c.id, c.text)).join("\n");
+            println!("{}", completion_tsv);
+        } else {
+            panic!("If you call completions, you need to provide type and query\nIf unsure, run 'rrun completions --help'")
+        }
+    } else {
+        run_ui(&config_directory, engine);
+    }
+}
+
+fn run_ui(config_directory: &Path, engine: DefaultEngine) {
     gtk::init().unwrap_or_else(|_| panic!("Failed to initialize GTK."));
     debug!("Major: {}, Minor: {}", gtk::get_major_version(), gtk::get_minor_version());
     let ui_path = config_directory.join(Path::new("rrun.glade"));
