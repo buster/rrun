@@ -30,15 +30,24 @@ impl AutoCompleter for ExternalAutoCompleter {
         debug!("Query {} applicable for {}: {}", query, self.trigger, is_applicable);
         let completion_vec = if is_applicable {
             // returns a new completion based on the passed string
-            let query = trigger_match[0].at(1).unwrap_or(query);
+            let query_string = query.to_string();
+            let matches = trigger_match[0].iter().map(|c| c.unwrap()).collect::<Vec<_>>().into_iter();
+            let sub_query = if trigger_match[0].len() > 1 {
+                trigger_match[0].at(1).unwrap()
+            } else {
+                "{}"
+            };
             let out;
             if self.command.len() > 0 {
-                out = match execute(self.command.replace("{}", query), false) {
+                let expanded_command = matches.enumerate().fold(self.command.replace("{}", sub_query),
+                    (|a,(i, e)| a.replace(&format!("{{{}}}", i), e)));
+                debug!("Expanded: {}", expanded_command);
+                out = match execute(expanded_command, false) {
                     Ok(x) => x,
                     Err(x) => {debug!("Error executing query {}", x); "".to_owned() }
                 }
             } else {
-                out = query.to_string()
+                out = query_string;
             };
             out.lines()
                .map(|l| l.to_owned())
