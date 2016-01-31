@@ -11,6 +11,16 @@ type="url"
 trigger="g (.*)"
 command="python -c 'import urllib; print(\"https://www.google.com/search?q={0}\".format(urllib.quote(\"{}\")))'"
 
+[[completion]]
+type="command"
+trigger="cache (.*?) (.*)"
+command="""echo 'rrun completions {1} "{2}" > ~/.config/rrun/{1}_{2}.cache\tCache completions for {1} {2}'"""
+
+[[completion]]
+type="url"
+command="cat ~/.config/rrun/url*.cache | grep -i {}"
+trigger="u (.*)"
+
 # [[completion]]
 # type="command"
 # command="echo {}"
