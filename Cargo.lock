@@ -1,6 +1,6 @@
 [root]
 name = "rrun"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "cairo-rs 0.0.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "clap 1.5.5 (registry+https://github.com/rust-lang/crates.io-index)",
