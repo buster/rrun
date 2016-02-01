@@ -37,7 +37,7 @@ snapshot:
 updatecowbuilder:
 	sudo cowbuilder --update
 
-# How to install rust in pbuilder/cowbuilder without debian packages:
+# How to install rust in pbuilder/cowbuilder:
 # sudo cowbuilder --login --save-after-login
 # apt-get update
 # apt-get dist-upgrade
