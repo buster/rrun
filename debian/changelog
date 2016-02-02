@@ -1,6 +1,4 @@
-rrun (0.2.0~4.gbpf6b600) UNRELEASED; urgency=medium
-
-  ** SNAPSHOT build @f6b600f34a18d28f510a12fffd24ec38f6c9fbf3 **
+rrun (0.2.0) unstable; urgency=medium
 
   [ Sebastian Schulze ]
   * describe package build process
@@ -92,8 +90,9 @@ rrun (0.2.0~4.gbpf6b600) UNRELEASED; urgency=medium
   [ Sebastian Schulze ]
   * update Makefile
   * update changelog
+  * define CARGO_HOME so that the build (hopefully) succeeds in cowbuilder
 
- -- Sebastian Schulze <me@bstr.eu>  Tue, 02 Feb 2016 22:18:48 +0100
+ -- Sebastian Schulze <me@bstr.eu>  Tue, 02 Feb 2016 22:37:10 +0100
 
 rrun (0.1.0) unstable; urgency=medium
 
