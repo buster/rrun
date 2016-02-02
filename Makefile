@@ -1,5 +1,6 @@
 LD_LIBRARY_PATH := $(DESTDIR)/tmp/lib
 PATH := $(DESTDIR)/tmp/bin:${PATH}
+CARGO_HOME := /build/cargo
 
 .EXPORT_ALL_VARIABLES:
 

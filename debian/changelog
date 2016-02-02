@@ -1,6 +1,6 @@
-rrun (0.2.0~3.gbpfb749d) UNRELEASED; urgency=medium
+rrun (0.2.0~4.gbpf6b600) UNRELEASED; urgency=medium
 
-  ** SNAPSHOT build @fb749d355771319592346c877dd0d741467825b3 **
+  ** SNAPSHOT build @f6b600f34a18d28f510a12fffd24ec38f6c9fbf3 **
 
   [ Sebastian Schulze ]
   * describe package build process
@@ -86,7 +86,14 @@ rrun (0.2.0~3.gbpfb749d) UNRELEASED; urgency=medium
   * UNRELEASED
   * update Makefile
 
- -- Sebastian Schulze <me@bstr.eu>  Mon, 01 Feb 2016 07:34:54 +0100
+  [ Martin Mauch ]
+  * Bump to 0.2.0
+
+  [ Sebastian Schulze ]
+  * update Makefile
+  * update changelog
+
+ -- Sebastian Schulze <me@bstr.eu>  Tue, 02 Feb 2016 22:18:48 +0100
 
 rrun (0.1.0) unstable; urgency=medium
 
