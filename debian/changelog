@@ -1,3 +1,93 @@
+rrun (0.2.0~3.gbpfb749d) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @fb749d355771319592346c877dd0d741467825b3 **
+
+  [ Sebastian Schulze ]
+  * describe package build process
+  * updated Cargo.toml
+  * Update README.rst
+  * update installation instructions
+  * reformatting source
+  * add some error messages
+  * remove unnecessary variable
+  * refactoring to use more Results
+  * refactoring to remove unused variables
+    the match has been unecessary
+  * additional error messages
+
+  [ Martin Mauch ]
+  * Use containerized Travis build.
+    Let's see if we get newer GTK packages there
+  * Replace hard-coded UI by Glade designed XML
+  * Use non-containerized Trusty in Travis build.
+    This reverts commit aa9d7ce7ddd5f30076bf959b092ded9bc360acb7.
+  * Another shot at a containerized Travis build
+    using pre-compiled GTK binaries like they do in gtk-rs.
+    This reverts commit 608858bc523d357e5e08d14199bccaddff4b022f.
+
+  [ Sebastian Schulze ]
+  * lower dependencey to GTK 3.14 (tracking Debian stable)
+
+  [ Martin Mauch ]
+  * Completions can be selected from a list
+  * Remove feature for using Entry instead of SearchEntry
+
+  [ Sebastian Schulze ]
+  * ignore errors in completion commands
+
+  [ Martin Mauch ]
+  * Factor out creation and reading of config directory
+  * Apply CSS styling if it exists
+    under ~/.config/rrun/style.css
+  * Create and use external Glade UI file
+    under ~/.config/rrun/rrun.glade
+  * Listen for key releases to handle backspace properly
+
+  [ Sebastian Schulze ]
+  * complete entry field on tab
+
+  [ Martin Mauch ]
+  * Pressing TAB stays in input box and cycles through completions in list
+  * Completion list only appears when there are completions
+
+  [ Sebastian Schulze ]
+  * complete on key press instead of key release
+    makes pressing TAB much more convenient..
+  * show only 5 completions at once
+    showing a mostly empty list of 20 entries fills up my screen
+    unnecessarily, i think 5 is much nicer..
+  * wrap the completion list in a scrollable list
+  * revert change to key press event.
+    When we trigger on key_release, the edit box is not yet updated and the
+    completion will read the text from the previous completion -> so the
+    completion list always lacks behind one character
+  * revert key_release event
+    when triggering on key_release, the edit box is not yet filled with the
+    new character and the completion will be the last one.
+    Need to find a better solution here
+  * update Cargo.lock
+
+  [ Martin Mauch ]
+  * Revert order of completions, first id then text.
+    We always need an id, so it should be the first argument.
+    The following arguments then are optional and can later be used to include e.g. icons or longer descriptions
+
+  [ Sebastian Schulze ]
+  * Revert "revert key_release event"
+    This reverts commit 38bca006482238912fe83eaf4f8ef31dff5439ab.
+
+  [ Martin Mauch ]
+  * Query and print completions to stdout
+  * Allow multiple match groups in regexes
+  * Add cache command completion
+
+  [ Sebastian Schulze ]
+  * bump Version to 0.2.0, prepare new release
+  * UNRELEASED
+  * update Makefile
+
+ -- Sebastian Schulze <me@bstr.eu>  Mon, 01 Feb 2016 07:34:54 +0100
+
 rrun (0.1.0) unstable; urgency=medium
 
   [ Tshepang Lekhonkhobe ]
@@ -41,8 +131,6 @@ rrun (0.1.0) unstable; urgency=medium
   * read config file in get_config_file()
   * move creation of completers to function
   * panic when $HOME is not found
-
-  [ buster ]
   * created contributors section
   * Update README.rst
 
@@ -91,8 +179,6 @@ rrun (0.0.7) unstable; urgency=medium
   * Use GTK SearchEntry per default, but disable on Travis (which has an outdated GTK version)
   * remove unused rustup.sh from Makefile
   * remove space in Makefile
-
-  [ buster ]
   * Update README.rst
   * Update README.rst
 
@@ -154,8 +240,6 @@ rrun (0.0.7) unstable; urgency=medium
   * read config file in get_config_file()
   * move creation of completers to function
   * panic when $HOME is not found
-
-  [ buster ]
   * created contributors section
   * Update README.rst
 
