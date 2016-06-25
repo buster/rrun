@@ -7,7 +7,7 @@ rrun (0.2.1) unstable; urgency=medium
   * define CARGO_HOME so that the build (hopefully) succeeds in cowbuilder
   * Update changelog for 0.2.0 release
 
- -- Sebastian Schulze <me@bstr.eu>  Sat, 25 Jun 2016 21:50:45 +0200
+ -- Sebastian Schulze <me@bstr.eu>  Sat, 25 Jun 2016 21:52:12 +0200
 
 rrun (0.2.0) unstable; urgency=medium
 
