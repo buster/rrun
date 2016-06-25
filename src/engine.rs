@@ -29,37 +29,37 @@ impl DefaultEngine {
         let completions = maybe_completions.flat_map(|cs| cs.as_slice().unwrap().into_iter());
         let autocompleter_configs = completions.flat_map(|cs| cs.as_table());
         autocompleter_configs.map(|cfg| {
-                                 let command = cfg.get("command")
-                                                  .and_then(|c| c.as_str())
-                                                  .map(|c| c.to_string())
-                                                  .unwrap_or("".to_string());
-                                 let tpe = cfg.get("type").and_then(|c| c.as_str()).map(|c| c.to_string()).unwrap();
-                                 let trigger = cfg.get("trigger")
-                                                  .and_then(|c| c.as_str())
-                                                  .map(|c| c.to_string())
-                                                  .unwrap_or("(.*)".to_string());
-                                 ExternalAutoCompleter::new(tpe, command, trigger)
-                             })
-                             .collect()
+                let command = cfg.get("command")
+                    .and_then(|c| c.as_str())
+                    .map(|c| c.to_string())
+                    .unwrap_or("".to_string());
+                let tpe = cfg.get("type").and_then(|c| c.as_str()).map(|c| c.to_string()).unwrap();
+                let trigger = cfg.get("trigger")
+                    .and_then(|c| c.as_str())
+                    .map(|c| c.to_string())
+                    .unwrap_or("(.*)".to_string());
+                ExternalAutoCompleter::new(tpe, command, trigger)
+            })
+            .collect()
     }
 
     pub fn get_runners(config: &toml::Table) -> HashMap<String, Vec<Box<ExternalRunner>>> {
         let runner_configs = config.get("runner")
-                                   .into_iter()
-                                   .flat_map(|r| r.as_slice().unwrap().into_iter())
-                                   .flat_map(|r| r.as_table());
+            .into_iter()
+            .flat_map(|r| r.as_slice().unwrap().into_iter())
+            .flat_map(|r| r.as_table());
         let runners: Vec<Box<ExternalRunner>> = runner_configs.map(|cfg| {
-                                                                  let command = cfg.get("command")
-                                                                                   .and_then(|c| c.as_str())
-                                                                                   .map(|c| c.to_string())
-                                                                                   .unwrap();
-                                                                  let tpe = cfg.get("type")
-                                                                               .and_then(|c| c.as_str())
-                                                                               .map(|c| c.to_string())
-                                                                               .unwrap();
-                                                                  ExternalRunner::new(tpe, command)
-                                                              })
-                                                              .collect();
+                let command = cfg.get("command")
+                    .and_then(|c| c.as_str())
+                    .map(|c| c.to_string())
+                    .unwrap();
+                let tpe = cfg.get("type")
+                    .and_then(|c| c.as_str())
+                    .map(|c| c.to_string())
+                    .unwrap();
+                ExternalRunner::new(tpe, command)
+            })
+            .collect();
 
         let mut runners_by_type = HashMap::with_capacity(runners.len());
         for (key, group) in runners.into_iter().group_by(|r| r.get_type()) {
@@ -72,10 +72,10 @@ impl DefaultEngine {
 impl Engine for DefaultEngine {
     fn get_completions(&self, query: &str) -> Box<Iterator<Item = Completion>> {
         let completions = self.completers
-                              .iter()
-                              .map(|completer| completer.complete(query).collect_vec().into_iter())
-                              .fold1(|c1, c2| c1.chain(c2).collect_vec().into_iter())
-                              .unwrap();
+            .iter()
+            .map(|completer| completer.complete(query).collect_vec().into_iter())
+            .fold1(|c1, c2| c1.chain(c2).collect_vec().into_iter())
+            .unwrap();
         Box::new(completions)
     }
 

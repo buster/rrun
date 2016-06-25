@@ -39,41 +39,44 @@ impl AutoCompleter for ExternalAutoCompleter {
             };
             let out;
             if self.command.len() > 0 {
-                let expanded_command = matches.enumerate().fold(self.command.replace("{}", sub_query),
-                    (|a,(i, e)| a.replace(&format!("{{{}}}", i), e)));
+                let expanded_command = matches.enumerate()
+                    .fold(self.command.replace("{}", sub_query), (|a, (i, e)| a.replace(&format!("{{{}}}", i), e)));
                 debug!("Expanded: {}", expanded_command);
                 out = match execute(expanded_command, false) {
                     Ok(x) => x,
-                    Err(x) => {debug!("Error executing query {}", x); "".to_owned() }
+                    Err(x) => {
+                        debug!("Error executing query {}", x);
+                        "".to_owned()
+                    }
                 }
             } else {
                 out = query_string;
             };
             out.lines()
-               .map(|l| l.to_owned())
-               .map(|c| {
-                   let cells = c.split("\t").collect::<Vec<_>>();
-                   if cells.len() == 1 {
-                       let c = Completion {
-                           tpe: self.tpe.to_owned(),
-                           text: cells[0].to_string(),
-                           id: cells[0].to_string(),
-                       };
-                       debug!("Generated completion with only text: {:?}", c);
-                       c
-                   } else if cells.len() == 2 {
-                       let c = Completion {
-                           tpe: self.tpe.to_owned(),
-                           text: cells[1].to_string(),
-                           id: cells[0].to_string(),
-                       };
-                       debug!("Generated completion with text and id: {:?}", c);
-                       c
-                   } else {
-                       panic!("Unexpected completion format {:?}", cells)
-                   }
-               })
-               .collect::<Vec<_>>()
+                .map(|l| l.to_owned())
+                .map(|c| {
+                    let cells = c.split("\t").collect::<Vec<_>>();
+                    if cells.len() == 1 {
+                        let c = Completion {
+                            tpe: self.tpe.to_owned(),
+                            text: cells[0].to_string(),
+                            id: cells[0].to_string(),
+                        };
+                        debug!("Generated completion with only text: {:?}", c);
+                        c
+                    } else if cells.len() == 2 {
+                        let c = Completion {
+                            tpe: self.tpe.to_owned(),
+                            text: cells[1].to_string(),
+                            id: cells[0].to_string(),
+                        };
+                        debug!("Generated completion with text and id: {:?}", c);
+                        c
+                    } else {
+                        panic!("Unexpected completion format {:?}", cells)
+                    }
+                })
+                .collect::<Vec<_>>()
         } else {
             vec![] as Vec<Completion>
         };

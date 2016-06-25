@@ -8,9 +8,13 @@ extern crate glib;
 extern crate toml;
 extern crate itertools;
 extern crate regex;
-#[macro_use] extern crate clap;
+#[macro_use]
+extern crate clap;
 
-use gtk::traits::*;
+use gtk::prelude::*;
+use gtk::{TreePath, StyleContext, CellRendererText, Builder, CssProvider, SearchEntry, ListStore, TreeView,
+          TreeViewColumn, Window};
+
 use std::rc::Rc;
 use std::io::prelude::*;
 use std::fs;
@@ -21,8 +25,6 @@ use std::env;
 use itertools::Itertools;
 use std::cell::{Cell, RefCell};
 use std::str::FromStr;
-use gtk::widgets;
-use gtk::signal::Inhibit;
 use gdk::enums::key;
 use gdk::keyval_to_unicode;
 use gdk::enums::modifier_type;
@@ -47,9 +49,9 @@ mod externalrunner;
 mod execution;
 
 
-fn append_text_column(tree: &gtk::TreeView) {
-    let column = gtk::TreeViewColumn::new().unwrap();
-    let cell = gtk::CellRendererText::new().unwrap();
+fn append_text_column(tree: &TreeView) {
+    let column = TreeViewColumn::new();
+    let cell = CellRendererText::new();
 
     column.pack_start(&cell, true);
     column.add_attribute(&cell, "text", 0);
@@ -94,13 +96,13 @@ fn read_config(config_file: &mut File) -> toml::Table {
     config
 }
 
-fn create_builder_from_file(mut file: &File) -> widgets::Builder {
+fn create_builder_from_file(mut file: &File) -> Builder {
     let mut content = String::new();
     match file.read_to_string(&mut content) {
         Err(why) => panic!("couldn't read file {:?}: {}", file, Error::description(&why)),
         Ok(_) => (),
     }
-    widgets::Builder::new_from_string(&content).unwrap()
+    Builder::new_from_string(&content)
 }
 
 #[allow(dead_code)]
@@ -114,11 +116,13 @@ fn main() {
             (@arg type: "The type of the completion in config.toml (e.g. url, command, ...)")
             (@arg query: "The query for which to list completions")
         )
-    ).get_matches();
+    )
+        .get_matches();
 
     let config_directory = get_config_dir();
     let config_path = config_directory.join(Path::new("config.toml"));
-    let mut file = get_or_create(&config_path, include_str!("config.toml")).unwrap_or_else(|x| panic!("Unable to read configuration! {}", x));
+    let mut file = get_or_create(&config_path, include_str!("config.toml"))
+        .unwrap_or_else(|x| panic!("Unable to read configuration! {}", x));
     let config = read_config(&mut file);
     let engine = DefaultEngine::new(&config);
 
@@ -128,7 +132,8 @@ fn main() {
             let completion_tsv = completions.map(|c| format!("{}\t{}", c.id, c.text)).join("\n");
             println!("{}", completion_tsv);
         } else {
-            panic!("If you call completions, you need to provide type and query\nIf unsure, run 'rrun completions --help'")
+            panic!("If you call completions, you need to provide type and query\nIf unsure, run 'rrun completions \
+                    --help'")
         }
     } else {
         run_ui(&config_directory, engine);
@@ -139,39 +144,35 @@ fn run_ui(config_directory: &Path, engine: DefaultEngine) {
     gtk::init().unwrap_or_else(|_| panic!("Failed to initialize GTK."));
     debug!("Major: {}, Minor: {}", gtk::get_major_version(), gtk::get_minor_version());
     let ui_path = config_directory.join(Path::new("rrun.glade"));
-    let ui_file = get_or_create(&ui_path, include_str!("rrun.glade")).unwrap_or_else(|x| panic!("Unable to read configuration! {}", x));
+    let ui_file = get_or_create(&ui_path, include_str!("rrun.glade"))
+        .unwrap_or_else(|x| panic!("Unable to read configuration! {}", x));
     let builder = create_builder_from_file(&ui_file);
-    let (window, entry, completion_list) = unsafe {
-        let window: gtk::Window = builder.get_object("rrun").unwrap();
-        let css_path = config_directory.join(Path::new("style.css"));
-        let css_result_message = css_path.to_str().map(|p|
-            widgets::CssProvider::load_from_path(p).map(|cp| {
-                widgets::StyleContext::add_provider_for_screen(&window.get_screen(), &cp, 1);
-                format!("Applied CSS stylesheet found in {:?}", p)
-            }).unwrap_or_else(|e| format!("Could not load CSS stylesheet in {:?}: {}", p, e))
-        ).unwrap_or(format!("No CSS stylesheet found in {:?}", css_path));
-        debug!("{}", css_result_message);
-        let completion_list: gtk::widgets::TreeView = builder.get_object("completion_view").unwrap();
-        let entry: gtk::widgets::SearchEntry = builder.get_object("search_entry").unwrap();
-        window.connect_delete_event(|_, _| {
-           gtk::main_quit();
-           Inhibit(false)
-        });
-        window.set_border_width(0);
-        window.set_decorated(false);
-        window.show_all();
-        (window, entry, completion_list)
+    let window: Window = builder.get_object("rrun").unwrap();
+    let css_path = config_directory.join(Path::new("style.css"));
+    let css_provider = CssProvider::new();
+    if css_provider.load_from_path(css_path.to_str().unwrap()).is_err() {
+        debug!("unable to load CSS!");
     };
+    let screen = gtk::WindowExt::get_screen(&window).unwrap();
+    StyleContext::add_provider_for_screen(&screen, &css_provider, 1);
+    let completion_list: TreeView = builder.get_object("completion_view").unwrap();
+    let entry: SearchEntry = builder.get_object("search_entry").unwrap();
+    window.connect_delete_event(|_, _| {
+        gtk::main_quit();
+        Inhibit(false)
+    });
+    window.set_border_width(0);
+    window.set_decorated(false);
+    window.show_all();
     let column_types = [glib::Type::String];
-    let completion_store = gtk::ListStore::new(&column_types).unwrap();
-    let completion_model = completion_store.get_model().unwrap();
+    let completion_store = ListStore::new(&column_types);
 
-    completion_list.set_model(&completion_model);
+    completion_list.set_model(Some(&completion_store));
     completion_list.set_headers_visible(false);
 
     append_text_column(&completion_list);
 
-    let last_pressed_key: Rc<Cell<i32>> = Rc::new(Cell::new(0));
+    let last_pressed_key: Rc<Cell<u32>> = Rc::new(Cell::new(0));
     let current_completion_index: Rc<Cell<i32>> = Rc::new(Cell::new(0));
 
     env_logger::init().unwrap_or_else(|x| panic!("Error initializing logger: {}", x));
@@ -179,10 +180,10 @@ fn run_ui(config_directory: &Path, engine: DefaultEngine) {
     let current_completions: Rc<RefCell<Vec<Completion>>> = Rc::new(RefCell::new(vec![]));
     let selected_completion: Rc<RefCell<Option<Completion>>> = Rc::new(RefCell::new(None));
     let current_and_selected_completions = (current_completions.clone(), selected_completion.clone());
-    completion_list.get_selection().unwrap().connect_changed(move |tree_selection| {
+    completion_list.get_selection().connect_changed(move |tree_selection| {
         if let Some((completion_model, iter)) = tree_selection.get_selected() {
             if let Some(path) = completion_model.get_path(&iter) {
-                let selected_number = usize::from_str(path.to_string().unwrap().trim()).unwrap();
+                let selected_number = usize::from_str(path.to_string().trim()).unwrap();
                 let (ref current_completions, ref selected_completion) = current_and_selected_completions;
                 *selected_completion.borrow_mut() = Some(current_completions.borrow()[selected_number].clone());
             }
@@ -190,8 +191,9 @@ fn run_ui(config_directory: &Path, engine: DefaultEngine) {
     });
 
     window.connect_key_release_event(move |_, key| {
-        let keyval = key.keyval as i32;
-        let keystate = (*key).state;
+        let keyval = key.get_keyval();
+        let keystate = key.get_state();
+        // let keystate = (*key).state;
         debug!("key pressed: {}", keyval);
         match keyval {
             key::Escape => gtk::main_quit(),
@@ -210,9 +212,9 @@ fn run_ui(config_directory: &Path, engine: DefaultEngine) {
                     engine.get_completions(&query).next().unwrap().to_owned()
                 };
 
-                if keystate.intersects(modifier_type::ControlMask) {
+                if keystate.intersects(gdk::CONTROL_MASK) {
                     let output = engine.run_completion(&the_completion, false)
-                                       .unwrap_or_else(|x| panic!("Error while executing the command {:?}", x));
+                        .unwrap_or_else(|x| panic!("Error while executing the command {:?}", x));
                     debug!("ctrl pressed!");
                     if output.len() > 0 {
                         entry.set_text(output.trim());
@@ -220,49 +222,46 @@ fn run_ui(config_directory: &Path, engine: DefaultEngine) {
                     }
                 } else {
                     let _ = engine.run_completion(&the_completion, true)
-                                  .unwrap_or_else(|x| panic!("Error while executing {:?} in the background!", x));
+                        .unwrap_or_else(|x| panic!("Error while executing {:?} in the background!", x));
                     gtk::main_quit();
                 }
 
-            },
+            }
             key::Tab => {
                 if last_pressed_key.get() == key::Tab {
                     current_completion_index.set(current_completion_index.get() + 1);
                     if let Some(ref c) = current_completions.borrow().get(current_completion_index.get() as usize) {
                         entry.set_text(&c.id);
-                        let tree_selection = completion_list.get_selection().unwrap();
-                        let mut selection_array = [current_completion_index.get()];
-                        let select_path = widgets::TreePath::new_from_indicesv(&mut selection_array).unwrap();
-                        tree_selection.select_path(&select_path);
                     }
-                }
-                else {
-                    //if last pressed key wasn't tab, we fill the entry with the most likely completion
+                } else {
+                    // if last pressed key wasn't tab, we fill the entry with the most likely completion
                     if let Some(ref c) = current_completions.borrow().get(0) {
                         entry.set_text(&c.id);
                         current_completion_index.set(0);
                     }
                 }
-            },
+            }
             _ => {
-                let is_text_modifying = keyval_to_unicode(key.keyval).is_some() || keyval == key::BackSpace || keyval == key::Delete;
+                let is_text_modifying = keyval_to_unicode(key.get_keyval()).is_some() || keyval == key::BackSpace ||
+                                        keyval == key::Delete;
                 if is_text_modifying {
-                    let query = entry.get_text().unwrap_or_else(|| panic!("Unable to get string from Entry widget!")).clone();
+                    let query =
+                        entry.get_text().unwrap_or_else(|| panic!("Unable to get string from Entry widget!")).clone();
                     let completions = engine.get_completions(query.trim()).collect_vec();
                     completion_store.clear();
-                    //debug!("Found {:?} completions", completions.len());
+                    // debug!("Found {:?} completions", completions.len());
                     for (i, cmpl) in completions.iter().enumerate().take(20) {
                         let iter = completion_store.append();
-                        completion_store.set_string(&iter, 0, format!("{}. {}", i + 1, cmpl.text).trim());
+                        completion_store.set(&iter, &[0], &[&format!("{}. {}", i + 1, cmpl.text).trim()]);
                     }
                     *current_completions.borrow_mut() = completions;
-                    let tree_selection = completion_list.get_selection().unwrap();
-                    let select_path = widgets::TreePath::new_first().unwrap();
+                    let tree_selection = completion_list.get_selection();
+                    let select_path = TreePath::new_first();
                     tree_selection.select_path(&select_path);
                 }
-            },
+            }
         }
-        last_pressed_key.set((*key).keyval as i32);
+        last_pressed_key.set(key.get_keyval());
         Inhibit(false)
     });
 

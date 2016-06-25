@@ -5,18 +5,18 @@ pub fn execute(cmd: String, in_background: bool) -> Result<String, String> {
     if in_background {
         debug!("executing in background: {}", cmd);
         match Command::new("bash")
-                  .arg("-c")
-                  .arg(&cmd)
-                  .spawn() {
+            .arg("-c")
+            .arg(&cmd)
+            .spawn() {
             Ok(_) => return Ok("".to_owned()),
             Err(x) => return Err(format!("failed to run command {} in the background: {}", cmd, x)),
         }
     } else {
         debug!("executing and getting stdout: {}", cmd);
-        let Output {status, stdout, .. } = match Command::new("bash")
-                                                     .arg("-c")
-                                                     .arg(&cmd)
-                                                     .output() {
+        let Output { status, stdout, .. } = match Command::new("bash")
+            .arg("-c")
+            .arg(&cmd)
+            .output() {
             Ok(output) => output,
             Err(x) => return Err(format!("unable to get output: {}!", x)),
         };

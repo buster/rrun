@@ -1,3 +1,22 @@
+rrun (0.2.1~1.gbpffe8bf) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @ffe8bf8e02c8490b6a2bdfbfa18bd459ccfd5b49 **
+
+  [ Sebastian Schulze ]
+  * update Makefile
+  * update changelog
+  * define CARGO_HOME so that the build (hopefully) succeeds in cowbuilder
+  * Update changelog for 0.2.0 release
+
+  [ buster ]
+  * Update README.rst
+  * Update README.rst
+
+  [ Sebastian Schulze ]
+  * Update dependencies
+
+ -- Sebastian Schulze <me@bstr.eu>  Sat, 25 Jun 2016 21:26:59 +0200
+
 rrun (0.2.0) unstable; urgency=medium
 
   [ Sebastian Schulze ]

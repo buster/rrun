@@ -14,12 +14,15 @@ exclude = [
         "rrun.gif",
         ]
 
+[dependencies.gtk]
+version = "0.1.0"
+features = ["v3_10"]
+
 [dependencies]
 log = "^0"
 env_logger = "^0"
 glib = "^0"
 gdk = "^0"
-gtk = "^0"
 cairo-rs = "^0"
 toml = "^0"
 itertools = "^0"
