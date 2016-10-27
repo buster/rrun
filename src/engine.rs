@@ -62,7 +62,7 @@ impl DefaultEngine {
             .collect();
 
         let mut runners_by_type = HashMap::with_capacity(runners.len());
-        for (key, group) in runners.into_iter().group_by(|r| r.get_type()) {
+        for (key, group) in runners.into_iter().group_by(|r| r.get_type()).into_iter() {
             runners_by_type.insert(key, group.into_iter().collect_vec());
         }
         runners_by_type
