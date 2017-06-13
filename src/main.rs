@@ -83,14 +83,14 @@ fn get_or_create(file_path: &Path, initial_content: &str) -> Result<File, String
     }
 }
 
-fn read_config(config_file: &mut File) -> toml::Table {
+fn read_config(config_file: &mut File) -> toml::value::Table {
     let mut toml = String::new();
     match config_file.read_to_string(&mut toml) {
         Err(why) => panic!("couldn't read Configfile ~/.config/rrun/config.toml: {}", Error::description(&why)),
         Ok(_) => (),
     }
 
-    let config = toml::Parser::new(&toml).parse().unwrap_or_else(|| panic!("Unable to parse config file TOML!"));
+    let config = toml::from_str(&toml).unwrap_or_else(|x| panic!("Unable to parse config file TOML! {}", x));
     debug!("config.toml contains the following configuration\n{:?}", config);
     config
 }
