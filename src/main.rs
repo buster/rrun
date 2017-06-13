@@ -13,7 +13,7 @@ extern crate clap;
 
 use gtk::prelude::*;
 use gtk::{TreePath, StyleContext, CellRendererText, Builder, CssProvider, SearchEntry, ListStore, TreeView,
-          TreeViewColumn, Window};
+          TreeViewColumn, Window, WindowExt};
 
 use std::rc::Rc;
 use std::io::prelude::*;
@@ -27,7 +27,6 @@ use std::cell::{Cell, RefCell};
 use std::str::FromStr;
 use gdk::enums::key;
 use gdk::keyval_to_unicode;
-use gdk::enums::modifier_type;
 use autocomplete::Completion;
 use engine::DefaultEngine;
 use engine::Engine;
@@ -153,7 +152,7 @@ fn run_ui(config_directory: &Path, engine: DefaultEngine) {
     if css_provider.load_from_path(css_path.to_str().unwrap()).is_err() {
         debug!("unable to load CSS!");
     };
-    let screen = gtk::WindowExt::get_screen(&window).unwrap();
+    let screen = window.get_screen().unwrap();
     StyleContext::add_provider_for_screen(&screen, &css_provider, 1);
     let completion_list: TreeView = builder.get_object("completion_view").unwrap();
     let entry: SearchEntry = builder.get_object("search_entry").unwrap();
@@ -199,7 +198,7 @@ fn run_ui(config_directory: &Path, engine: DefaultEngine) {
             key::Escape => gtk::main_quit(),
             key::Return => {
                 debug!("keystate: {:?}", keystate);
-                debug!("Controlmask == {:?}", modifier_type::ControlMask);
+                debug!("Controlmask == {:?}", gdk::CONTROL_MASK);
                 let ref compls_vec = *current_completions;
                 let compls = compls_vec.borrow();
 
