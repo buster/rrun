@@ -27,7 +27,7 @@ cairo-rs = "^0"
 toml = "^0"
 itertools = "^0"
 regex = "^0"
-clap = "^1"
+clap = "^2"
 
 [[bin]]
 name = "rrun"
