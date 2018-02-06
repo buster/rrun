@@ -19,21 +19,21 @@ install:
 	install -m 0755 target/release/rrun $(DESTDIR)/usr/bin/rrun
 
 deb:
-	git-buildpackage --git-upstream-branch=master --git-debian-branch=master --git-ignore-new --git-pbuilder
+	gbp buildpackage --git-upstream-branch=master --git-debian-branch=master --git-ignore-new --git-pbuilder
 
 local-deb:
 	debuild --preserve-env --prepend-path=/usr/local/bin -d binary
 
 release:
-	git-dch -a -c -R --full --debian-tag="v%(version)s" --git-author
-	git-buildpackage --git-upstream-branch=master --git-debian-branch=master --git-pbuilder --git-tag --git-debian-tag="v%(version)s"
+	gbp dch -a -c -R --full --debian-tag="v%(version)s" --git-author
+	gbp buildpackage --git-upstream-branch=master --git-debian-branch=master --git-pbuilder --git-tag --git-debian-tag="v%(version)s"
 
 clean:
 	rm -rf target
 
 snapshot:
-	git-dch -a -S --full --debian-tag="v%(version)s" --git-author
-	git-buildpackage --git-upstream-branch=master --git-debian-branch=master --git-ignore-new --git-pbuilder  --git-debian-tag="v%(version)s"
+	gbp dch -a -S --full --debian-tag="v%(version)s" --git-author
+	gbp buildpackage --git-upstream-branch=master --git-debian-branch=master --git-ignore-new --git-pbuilder  --git-debian-tag="v%(version)s"
 
 updatecowbuilder:
 	sudo cowbuilder --update

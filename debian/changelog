@@ -1,3 +1,18 @@
+rrun (0.2.2~3.gbpdef311) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @def311f52a0a0d034861a085dbe084f26e0af3a5 **
+
+  * update dependencies
+  * updates gtk deps
+  * updates clap
+  * updates env_logger
+  * updates regex
+  * update toml
+  * updates clap
+  * fix regex update
+
+ -- Sebastian Schulze <me@bstr.eu>  Tue, 06 Feb 2018 11:16:26 +0100
+
 rrun (0.2.1) unstable; urgency=medium
 
   [ Sebastian Schulze ]
