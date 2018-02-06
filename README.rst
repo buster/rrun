@@ -8,6 +8,8 @@
 rrun
 ====
 
+Note: Apart from the occasional fix, this project is not actively developed anymore. rrun works fine and should run/compile for the time being on rust stable. Alternatives to rrun are gmrun and rofi.
+
 rrun is a minimalistic command launcher in rust similar to gmrun.
 It started as a playground to learn Rust, but since i use it all day for months now, it's probably useful for others as well.
 It replaced gmrun and gnome-do on my laptop.
