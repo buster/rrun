@@ -33,14 +33,14 @@ impl AutoCompleter for ExternalAutoCompleter {
             let query_string = query.to_string();
             let matches = trigger_match[0].iter().map(|c| c.unwrap()).collect::<Vec<_>>().into_iter();
             let sub_query = if trigger_match[0].len() > 1 {
-                trigger_match[0].at(1).unwrap()
+                trigger_match[0].get(1).unwrap().as_str()
             } else {
                 "{}"
             };
             let out;
             if self.command.len() > 0 {
                 let expanded_command = matches.enumerate()
-                    .fold(self.command.replace("{}", sub_query), (|a, (i, e)| a.replace(&format!("{{{}}}", i), e)));
+                    .fold(self.command.replace("{}", sub_query), (|a, (i, e)| a.replace(&format!("{{{}}}", i), e.as_str())));
                 debug!("Expanded: {}", expanded_command);
                 out = match execute(expanded_command, false) {
                     Ok(x) => x,
