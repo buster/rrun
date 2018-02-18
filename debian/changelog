@@ -1,3 +1,17 @@
+rrun (0.2.3~2.gbp754684) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @754684c155ab6fe640ccc3c40acfa0d25f913965 **
+
+  [ buster ]
+  * Add deprecation hint to readme
+  * Update readme
+
+  [ Sebastian Schulze ]
+  * update crate version
+  * update cargo dependencies
+
+ -- Sebastian Schulze <me@bstr.eu>  Sun, 18 Feb 2018 21:26:20 +0100
+
 rrun (0.2.2) unstable; urgency=medium
 
   * update dependencies

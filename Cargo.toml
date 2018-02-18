@@ -1,6 +1,6 @@
 [package]
 name = "rrun"
-version = "0.2.2"
+version = "0.2.3"
 authors = ["me@bstr.eu"]
 repository = "https://github.com/buster/rrun"
 keywords = ["gtk", "tool", "bash"]
@@ -15,15 +15,15 @@ exclude = [
         ]
 
 [dependencies.gtk]
-version = "0.1.3"
+version = "0.3.0"
 features = ["v3_10"]
 
 [dependencies]
 log = "^0"
 env_logger = "^0"
-glib = "^0"
-gdk = "^0"
-cairo-rs = "^0"
+glib = "0.4.1"
+gdk = "0.7.0"
+#cairo-rs = "0.3.0"
 toml = "^0"
 itertools = "^0"
 regex = "^0"

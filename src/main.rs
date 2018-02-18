@@ -13,7 +13,7 @@ extern crate clap;
 
 use gtk::prelude::*;
 use gtk::{TreePath, StyleContext, CellRendererText, Builder, CssProvider, SearchEntry, ListStore, TreeView,
-          TreeViewColumn, Window, WindowExt};
+          TreeViewColumn, Window, GtkWindowExt};
 
 use std::rc::Rc;
 use std::io::prelude::*;
@@ -174,7 +174,7 @@ fn run_ui(config_directory: &Path, engine: DefaultEngine) {
     let last_pressed_key: Rc<Cell<u32>> = Rc::new(Cell::new(0));
     let current_completion_index: Rc<Cell<i32>> = Rc::new(Cell::new(0));
 
-    env_logger::init().unwrap_or_else(|x| panic!("Error initializing logger: {}", x));
+    env_logger::init();
 
     let current_completions: Rc<RefCell<Vec<Completion>>> = Rc::new(RefCell::new(vec![]));
     let selected_completion: Rc<RefCell<Option<Completion>>> = Rc::new(RefCell::new(None));
@@ -198,7 +198,7 @@ fn run_ui(config_directory: &Path, engine: DefaultEngine) {
             key::Escape => gtk::main_quit(),
             key::Return => {
                 debug!("keystate: {:?}", keystate);
-                debug!("Controlmask == {:?}", gdk::CONTROL_MASK);
+                debug!("Controlmask == {:?}", gdk::ModifierType::CONTROL_MASK);
                 let ref compls_vec = *current_completions;
                 let compls = compls_vec.borrow();
 
@@ -211,7 +211,7 @@ fn run_ui(config_directory: &Path, engine: DefaultEngine) {
                     engine.get_completions(&query).next().unwrap().to_owned()
                 };
 
-                if keystate.intersects(gdk::CONTROL_MASK) {
+                if keystate.intersects(gdk::ModifierType::CONTROL_MASK) {
                     let output = engine.run_completion(&the_completion, false)
                         .unwrap_or_else(|x| panic!("Error while executing the command {:?}", x));
                     debug!("ctrl pressed!");
